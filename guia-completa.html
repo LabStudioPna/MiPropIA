@@ -29,12 +29,17 @@
   .guide-wrap p{color:var(--text);font-size:15px;}
   .guide-wrap ol,.guide-wrap ul{font-size:15px;padding-left:22px;}
   .callout{background:var(--bg-alt);border-left:4px solid var(--accent);border-radius:8px;padding:14px 18px;font-size:14px;margin:18px 0;}
-  table.tbl{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px;}
+  table.tbl{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}
   table.tbl th,table.tbl td{border:1px solid var(--border);padding:10px 12px;text-align:left;}
   table.tbl th{background:var(--bg-alt);}
   .faq2 summary{cursor:pointer;font-weight:600;padding:12px 0;border-bottom:1px solid var(--border);}
   .faq2 p{padding:10px 0 4px;color:var(--text-muted);}
   .top-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:10px;}
+  @media(max-width:480px){
+    .guide-wrap{padding:36px 16px 60px;}
+    .guide-wrap h2{font-size:22px;}
+    .toc{padding:18px 20px;}
+  }
 </style>
 </head>
 <body>
@@ -178,3 +183,20 @@
   toggle.addEventListener('click', () => {
     const current = root.getAttribute('data-theme');
     applyTheme(current === 'dark' ? 'light' : 'dark');
+  });
+
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const navlinksEl = document.querySelector('.navlinks');
+  if (hamburgerBtn && navlinksEl) {
+    hamburgerBtn.addEventListener('click', () => {
+      const isOpen = navlinksEl.classList.toggle('open');
+      hamburgerBtn.textContent = isOpen ? '✕' : '☰';
+    });
+    navlinksEl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      navlinksEl.classList.remove('open');
+      hamburgerBtn.textContent = '☰';
+    }));
+  }
+</script>
+</body>
+</html>

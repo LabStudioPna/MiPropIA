@@ -189,7 +189,7 @@ footer.site p{font-size:13.5px;color:#8FA6BE;}
 .waitlist label{display:block;font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:6px;}
 .waitlist input,.waitlist select,.waitlist textarea{
   width:100%;padding:11px 13px;border-radius:10px;border:1px solid var(--border);
-  background:var(--bg);color:var(--text);font-family:inherit;font-size:14.5px;
+  background:var(--bg);color:var(--text);font-family:inherit;font-size:16px;
 }
 .waitlist textarea{resize:vertical;min-height:80px;}
 .waitlist .full{grid-column:1 / -1;}

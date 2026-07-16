@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Página no encontrada — MiPropIA</title>
+<meta name="description" content="La página que buscás no existe o fue movida. Volvé al inicio de MiPropIA.">
+<meta name="robots" content="noindex">
+
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#1E3A5F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MiPropIA">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .e404{position:relative;overflow:hidden;min-height:78vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:60px 24px;}
+  .e404-glow{position:absolute;border-radius:50%;filter:blur(90px);opacity:.35;pointer-events:none;z-index:0;}
+  .e404-glow.one{width:360px;height:360px;background:var(--brand-light);top:-120px;left:-90px;}
+  .e404-glow.two{width:320px;height:320px;background:var(--accent);bottom:-140px;right:-80px;}
+  .e404-inner{position:relative;z-index:1;max-width:560px;}
+  .e404-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:18px;font-family:'Inter',sans-serif;font-weight:600;}
+  .e404-eyebrow::before{content:'';width:16px;height:1px;background:var(--accent);}
+  .e404-num{font-family:'Poppins',sans-serif;font-weight:700;font-size:clamp(5rem,16vw,9rem);line-height:1;margin:0 0 10px;background:linear-gradient(135deg,var(--brand-light),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .e404-title{font-family:'Poppins',sans-serif;font-weight:600;font-size:clamp(1.4rem,3vw,1.9rem);color:var(--text);margin:0 0 14px;}
+  .e404-text{color:var(--text-muted);font-size:15.5px;line-height:1.6;margin:0 0 32px;}
+  .e404-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+  @media(max-width:480px){
+    .e404{min-height:70vh;padding:40px 18px;}
+    .e404-actions{flex-direction:column;align-items:stretch;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <nav class="nav">
+    <a href="index.html" class="brand"><img src="favicon-192.png" alt="MiPropIA"> Mi Prop<span class="ia">IA</span></a>
+    <div class="navlinks">
+      <a href="index.html#features">Características</a>
+      <a href="index.html#pricing">Precios</a>
+      <a href="guia-completa.html">📚 Guía Completa</a>
+      <a href="index.html#contacto">Contacto</a>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" title="Modo claro/oscuro">🌙</button>
+      <a href="agente-inmobiliario.html" class="btn btn-primary">Ir al Agente →</a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Abrir menú">☰</button>
+    </div>
+  </nav>
+</header>
+
+<section class="e404">
+  <div class="e404-glow one" aria-hidden="true"></div>
+  <div class="e404-glow two" aria-hidden="true"></div>
+  <div class="e404-inner">
+    <span class="e404-eyebrow">MiPropIA</span>
+    <p class="e404-num">404</p>
+    <h1 class="e404-title">Esta propiedad no está en cartera.</h1>
+    <p class="e404-text">La página que buscás no está disponible — puede que el enlace esté roto o que se haya movido. Volvé al inicio o entrá directo al agente para seguir trabajando.</p>
+    <div class="e404-actions">
+      <a href="index.html" class="btn btn-primary">← Volver al inicio</a>
+      <a href="agente-inmobiliario.html" class="btn btn-ghost">Ir al Agente</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="container">
+    <div class="foot-bottom">
+      <span>© 2026 MiPropIA · Todos los derechos reservados</span>
+      <span>Desarrollado por LABStudio.pna · Paraná, Entre Ríos, Argentina</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const toggle = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  function applyTheme(t){ root.setAttribute('data-theme', t); toggle.textContent = t === 'dark' ? '☀️' : '🌙'; }
+  applyTheme(localStorage.getItem('mipropia_theme') || 'light');
+  toggle.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(next); localStorage.setItem('mipropia_theme', next);
+  });
+
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const navlinksEl = document.querySelector('.navlinks');
+  if (hamburgerBtn && navlinksEl) {
+    hamburgerBtn.addEventListener('click', () => {
+      const isOpen = navlinksEl.classList.toggle('open');
+      hamburgerBtn.textContent = isOpen ? '✕' : '☰';
+    });
+    navlinksEl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      navlinksEl.classList.remove('open');
+      hamburgerBtn.textContent = '☰';
+    }));
+  }
+</script>
+</body>
+</html>
