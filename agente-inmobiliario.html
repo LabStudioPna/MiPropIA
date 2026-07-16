@@ -66,16 +66,21 @@
   .field{margin-bottom:14px;}
   .field label{display:block;font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:6px;}
   .field input,.field select{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--border);font-size:16px;background:var(--bg);color:var(--text);}
+  .field textarea{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--border);font-size:16px;font-family:inherit;background:var(--bg);color:var(--text);resize:vertical;min-height:70px;}
   .result-box{background:var(--bg-alt);border-radius:12px;padding:18px;margin-top:6px;}
   .result-box .big{font-size:28px;font-family:'Poppins',sans-serif;font-weight:700;color:var(--brand-light);}
 
   .venc-form{display:grid;grid-template-columns:1.3fr 1fr .8fr auto;gap:12px;align-items:end;margin-bottom:24px;}
-  table.venc{width:100%;border-collapse:collapse;font-size:14px;}
+  table.venc{width:100%;border-collapse:collapse;font-size:14px;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}
   table.venc th,table.venc td{padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;}
   .semaforo{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;}
   .semaforo.rojo{background:#C0392B;}
   .semaforo.naranja{background:var(--accent);}
   .semaforo.verde{background:var(--brand-light);}
+
+  .mini-form{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;margin-bottom:14px;}
+  table.mini{width:100%;border-collapse:collapse;font-size:13.5px;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table.mini th,table.mini td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left;}
 
   .empty{color:var(--text-muted);font-size:14px;text-align:center;padding:30px 0;}
   .loading{display:inline-flex;gap:4px;align-items:center;}
@@ -91,8 +96,9 @@
     .tab-row{display:flex;overflow-x:auto;gap:8px;-webkit-overflow-scrolling:touch;}
     .tab-btn{white-space:nowrap;width:auto;flex-shrink:0;margin-bottom:0;}
     .keybox{margin-top:12px;}
-    .calc-grid{grid-template-columns:1fr;}
-    .venc-form{grid-template-columns:1fr;}
+    .calc-grid{grid-template-columns:1fr !important;}
+    .venc-form{grid-template-columns:1fr !important;}
+    .mini-form{grid-template-columns:1fr !important;}
     .app-main{padding:18px;}
     .chat-log{height:320px;}
   }
