@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="shortcut icon" href="favicon.ico">
 <link rel="manifest" href="site.webmanifest">
-<meta name="theme-color" content="#1F4B3F">
+<meta name="theme-color" content="#1E3A5F">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
@@ -216,7 +216,29 @@
           </div>
         </div>
       </div>
-      <p class="disclaimer">⚠️ Los porcentajes de sellado son valores de referencia (pueden variar por exenciones, montos mínimos no imponibles y actualizaciones). MiPropIA no reemplaza la verificación oficial ante ARBA / Rentas provincial correspondiente.</p>
+
+      <h3 style="font-size:15px;margin-top:28px;border-top:1px solid var(--border);padding-top:22px;">Impuesto Inmobiliario / ABL anual</h3>
+      <div class="calc-grid">
+        <div>
+          <div class="field">
+            <label>Provincia / Jurisdicción</label>
+            <select id="provinciaAbl"></select>
+          </div>
+          <div class="field">
+            <label>Valuación fiscal de la propiedad ($)</label>
+            <input type="number" id="valuacionAbl" placeholder="Ej: 18000000">
+          </div>
+        </div>
+        <div>
+          <div class="result-box">
+            <div class="muted" style="font-size:12.5px;">Impuesto inmobiliario estimado (anual)</div>
+            <div class="big" id="ablResult">$0</div>
+            <div class="muted" style="font-size:12px;margin-top:4px;" id="ablAlicuota"></div>
+            <div class="muted" style="font-size:12px;margin-top:2px;" id="ablCuota"></div>
+          </div>
+        </div>
+      </div>
+      <p class="disclaimer">⚠️ Los porcentajes de sellado, comisión e impuesto inmobiliario son valores de referencia (pueden variar por exenciones, montos mínimos no imponibles, categoría de la propiedad y actualizaciones). MiPropIA no reemplaza la verificación oficial ante ARBA / Rentas provincial o municipal correspondiente.</p>
     </section>
 
     <!-- RENTABILIDAD -->
@@ -588,6 +610,32 @@ function calcComision(){
 }
 ['tipoComision','montoComision','pctComision'].forEach(id => document.getElementById(id).addEventListener('input', calcComision));
 calcComision();
+
+/* ---------- Impuesto Inmobiliario / ABL (estimado, sobre valuación fiscal) ---------- */
+const ALICUOTAS_ABL = {
+  'CABA': 0.0060, 'Buenos Aires': 0.0100, 'Catamarca': 0.0080, 'Chaco': 0.0090,
+  'Chubut': 0.0080, 'Córdoba': 0.0090, 'Corrientes': 0.0080, 'Entre Ríos': 0.0090,
+  'Formosa': 0.0080, 'Jujuy': 0.0080, 'La Pampa': 0.0080, 'La Rioja': 0.0080,
+  'Mendoza': 0.0090, 'Misiones': 0.0080, 'Neuquén': 0.0090, 'Río Negro': 0.0080,
+  'Salta': 0.0080, 'San Juan': 0.0080, 'San Luis': 0.0080, 'Santa Cruz': 0.0080,
+  'Santa Fe': 0.0090, 'Santiago del Estero': 0.0080, 'Tierra del Fuego': 0.0080, 'Tucumán': 0.0080
+};
+const provinciaAbl = document.getElementById('provinciaAbl');
+Object.keys(ALICUOTAS_ABL).forEach(p => {
+  const opt = document.createElement('option'); opt.value = p; opt.textContent = p; provinciaAbl.appendChild(opt);
+});
+
+function calcAbl(){
+  const prov = provinciaAbl.value;
+  const valuacion = parseFloat(document.getElementById('valuacionAbl').value) || 0;
+  const rate = ALICUOTAS_ABL[prov] || 0.008;
+  const anual = valuacion * rate;
+  document.getElementById('ablResult').textContent = fmtMoney(anual);
+  document.getElementById('ablAlicuota').textContent = `Alícuota de referencia ${prov}: ${(rate*100).toFixed(2)}% sobre valuación fiscal`;
+  document.getElementById('ablCuota').textContent = `≈ ${fmtMoney(anual/6)} por cuota bimestral (esquema habitual de 6 cuotas/año)`;
+}
+['provinciaAbl','valuacionAbl'].forEach(id => document.getElementById(id).addEventListener('input', calcAbl));
+calcAbl();
 
 /* ---------- Rentabilidad (ROI / cap rate) ---------- */
 function calcRoi(){
