@@ -19,6 +19,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   body{background:var(--bg-alt);}
   .app-shell{max-width:1180px;margin:0 auto;padding:22px 24px 60px;display:grid;grid-template-columns:230px 1fr;gap:22px;}
@@ -123,6 +124,9 @@
       <button class="tab-btn" data-tab="calc">🧮 Calculadora</button>
       <button class="tab-btn" data-tab="roi">📈 Rentabilidad</button>
       <button class="tab-btn" data-tab="venc">📅 Vencimientos</button>
+      <button class="tab-btn" data-tab="boletos">📝 Boletos</button>
+      <button class="tab-btn" data-tab="tasacion">🏷️ Tasación</button>
+      <button class="tab-btn" data-tab="verificacion">🔍 Verificación</button>
     </div>
 
     <div class="keybox">
@@ -306,6 +310,99 @@
         <tbody id="vencTbody"></tbody>
       </table>
       <div id="vencEmpty" class="empty" style="display:none;">Todavía no cargaste ningún contrato.</div>
+    </section>
+
+    <!-- BOLETOS -->
+    <section class="panel" id="panel-boletos">
+      <h2>📝 Generador de boletos de compraventa</h2>
+      <p class="sub">Completá los datos y generá un boleto de compraventa listo para revisar con el escribano — es un modelo orientativo, no reemplaza el asesoramiento legal.</p>
+      <div class="calc-grid">
+        <div>
+          <h3 style="font-size:15px;">Partes</h3>
+          <div class="field"><label>Vendedor (nombre completo)</label><input type="text" id="bolVendedorNombre" placeholder="Ej: Juan Pérez"></div>
+          <div class="field"><label>DNI vendedor</label><input type="text" id="bolVendedorDni" placeholder="Ej: 20.123.456"></div>
+          <div class="field"><label>Comprador (nombre completo)</label><input type="text" id="bolCompradorNombre" placeholder="Ej: María Gómez"></div>
+          <div class="field"><label>DNI comprador</label><input type="text" id="bolCompradorDni" placeholder="Ej: 30.456.789"></div>
+        </div>
+        <div>
+          <h3 style="font-size:15px;">Inmueble y operación</h3>
+          <div class="field"><label>Dirección del inmueble</label><input type="text" id="bolDireccion" placeholder="Ej: Av. Ramírez 1234, Paraná"></div>
+          <div class="field"><label>Nomenclatura catastral / partida</label><input type="text" id="bolPartida" placeholder="Ej: Partida 123456"></div>
+          <div class="field"><label>Precio total</label><input type="text" id="bolPrecio" placeholder="Ej: USD 85.000"></div>
+          <div class="field"><label>Seña / anticipo</label><input type="text" id="bolSenia" placeholder="Ej: USD 10.000 al firmar"></div>
+        </div>
+      </div>
+      <div class="calc-grid">
+        <div class="field"><label>Saldo y forma de pago</label><textarea id="bolFormaPago" placeholder="Ej: Saldo de USD 75.000 al momento de la escritura, dentro de los 60 días..."></textarea></div>
+        <div class="field"><label>Plazo para escriturar</label><input type="text" id="bolPlazo" placeholder="Ej: 60 días corridos desde la firma"></div>
+      </div>
+      <div class="field"><label>Observaciones / cláusulas particulares</label><textarea id="bolObservaciones" placeholder="Ej: libre de ocupantes, gastos de escritura a cargo del comprador..."></textarea></div>
+      <div class="field"><label>Ciudad y fecha</label><input type="text" id="bolFecha" placeholder="Ej: Paraná, 16 de julio de 2026"></div>
+      <button class="btn btn-primary" id="bolGenerarBtn">Generar boleto</button>
+
+      <div id="bolPreviewBox" style="display:none;margin-top:24px;">
+        <div class="doc-card" id="bolPreviewContent" style="white-space:pre-wrap;font-family:'Inter',sans-serif;line-height:1.7;"></div>
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+          <button class="btn btn-primary" id="bolDescargarBtn">⬇️ Descargar PDF</button>
+          <button class="btn btn-ghost" id="bolCopiarBtn">📋 Copiar texto</button>
+        </div>
+      </div>
+      <p class="disclaimer">⚠️ Este boleto es un modelo orientativo generado automáticamente — siempre debe ser revisado y ajustado por un escribano o abogado antes de firmarse. MiPropIA no se responsabiliza por cláusulas legales específicas de cada operación.</p>
+    </section>
+
+    <!-- TASACIÓN COMPARABLE -->
+    <section class="panel" id="panel-tasacion">
+      <h2>🏷️ Tasación comparable</h2>
+      <p class="sub">Cargá comparables de venta reciente en la zona y estimá un rango de valor por metro cuadrado — método de comparables simple, no reemplaza una tasación profesional matriculada.</p>
+
+      <h3 style="font-size:15px;">Propiedad a tasar</h3>
+      <div class="calc-grid">
+        <div class="field"><label>Superficie (m²)</label><input type="number" id="tasM2Propia" placeholder="Ej: 75"></div>
+        <div class="field"><label>Zona / barrio</label><input type="text" id="tasZona" placeholder="Ej: Centro, Paraná"></div>
+      </div>
+
+      <h3 style="font-size:15px;margin-top:24px;">Comparables de venta reciente</h3>
+      <div class="mini-form" style="grid-template-columns:1.3fr .8fr 1fr auto;">
+        <div class="field" style="margin-bottom:0;"><label>Referencia</label><input type="text" id="tasCompRef" placeholder="Ej: Depto 2 amb, mismo barrio"></div>
+        <div class="field" style="margin-bottom:0;"><label>M²</label><input type="number" id="tasCompM2" placeholder="Ej: 60"></div>
+        <div class="field" style="margin-bottom:0;"><label>Precio de venta</label><input type="number" id="tasCompPrecio" placeholder="Ej: 60000"></div>
+        <button class="btn btn-primary" id="tasCompAddBtn" style="height:40px;">Agregar</button>
+      </div>
+      <table class="mini" id="tasCompTable">
+        <thead><tr><th>Referencia</th><th>M²</th><th>Precio</th><th>$/m²</th><th></th></tr></thead>
+        <tbody id="tasCompTbody"></tbody>
+      </table>
+      <div id="tasCompEmpty" class="empty" style="display:none;padding:16px 0;">Todavía no cargaste comparables.</div>
+
+      <div class="result-box" style="margin-top:20px;">
+        <div class="muted" style="font-size:12.5px;">Valor estimado por m² (promedio de comparables)</div>
+        <div class="big" id="tasValorM2">—</div>
+        <div class="muted" style="font-size:12px;margin-top:4px;" id="tasRangoM2"></div>
+      </div>
+      <div class="result-box" style="margin-top:14px;">
+        <div class="muted" style="font-size:12.5px;">Valor estimado de tu propiedad</div>
+        <div class="big" id="tasValorTotal">—</div>
+        <div class="muted" style="font-size:12px;margin-top:4px;" id="tasRangoTotal"></div>
+      </div>
+      <p class="disclaimer">⚠️ Estimación orientativa por método de comparables simples — no contempla estado de conservación, piso, orientación ni antigüedad. Para una tasación con validez profesional, consultá a un martillero o tasador matriculado.</p>
+    </section>
+
+    <!-- VERIFICACIÓN DOCUMENTAL -->
+    <section class="panel" id="panel-verificacion">
+      <h2>🔍 Verificación documental</h2>
+      <p class="sub">Checklist de la documentación habitual para una compraventa, y análisis con IA de un documento puntual (informe de dominio, libre deuda, etc.) para detectar datos faltantes o inconsistencias.</p>
+
+      <h3 style="font-size:15px;">Checklist de la operación</h3>
+      <div id="verifChecklist"></div>
+
+      <h3 style="font-size:15px;margin-top:26px;">Analizar un documento con IA</h3>
+      <p class="sub" style="margin-bottom:10px;">Subí el PDF de un informe de dominio, libre deuda, certificado de inhibiciones u otro documento — la IA lo lee y te resume los datos clave y posibles alertas.</p>
+      <div class="dropzone" id="verifDropzone">
+        <div>📎 Hacé click para subir un PDF, o arrastralo acá</div>
+        <input type="file" id="verifFileInput" accept=".pdf" style="display:none;">
+      </div>
+      <div id="verifResult"></div>
+      <p class="disclaimer">⚠️ MiPropIA no reemplaza la verificación registral oficial (Registro de la Propiedad) ni el asesoramiento de un escribano — es una herramienta de apoyo para agilizar la primera lectura.</p>
     </section>
 
   </main>
@@ -713,6 +810,224 @@ document.getElementById('vencAddBtn').addEventListener('click', () => {
   document.getElementById('vencPlazo').value = '24';
   renderVenc();
 });
+
+/* ---------- Generador de boletos de compraventa ---------- */
+document.getElementById('bolGenerarBtn').addEventListener('click', () => {
+  const vendedorNombre = document.getElementById('bolVendedorNombre').value.trim();
+  const vendedorDni = document.getElementById('bolVendedorDni').value.trim();
+  const compradorNombre = document.getElementById('bolCompradorNombre').value.trim();
+  const compradorDni = document.getElementById('bolCompradorDni').value.trim();
+  const direccion = document.getElementById('bolDireccion').value.trim();
+  const partida = document.getElementById('bolPartida').value.trim();
+  const precio = document.getElementById('bolPrecio').value.trim();
+  const senia = document.getElementById('bolSenia').value.trim();
+  const formaPago = document.getElementById('bolFormaPago').value.trim();
+  const plazo = document.getElementById('bolPlazo').value.trim();
+  const observaciones = document.getElementById('bolObservaciones').value.trim();
+  const fecha = document.getElementById('bolFecha').value.trim();
+
+  if (!vendedorNombre || !compradorNombre || !direccion || !precio){
+    alert('Completá al menos vendedor, comprador, dirección y precio.');
+    return;
+  }
+
+  const texto = `BOLETO DE COMPRAVENTA
+
+En ${fecha || '[ciudad y fecha]'}, entre ${vendedorNombre}${vendedorDni ? ', DNI ' + vendedorDni : ''}, en adelante EL VENDEDOR, y ${compradorNombre}${compradorDni ? ', DNI ' + compradorDni : ''}, en adelante EL COMPRADOR, se conviene celebrar el presente boleto de compraventa sujeto a las siguientes cláusulas:
+
+PRIMERA — Objeto: EL VENDEDOR vende y EL COMPRADOR compra el inmueble ubicado en ${direccion}${partida ? ', ' + partida : ''}.
+
+SEGUNDA — Precio: El precio total de la operación se fija en ${precio}.
+
+TERCERA — Seña: ${senia || 'A convenir entre las partes.'}
+
+CUARTA — Saldo y forma de pago: ${formaPago || 'A convenir entre las partes.'}
+
+QUINTA — Plazo de escrituración: ${plazo || 'A convenir entre las partes.'}
+
+SEXTA — Observaciones: ${observaciones || 'Sin observaciones particulares.'}
+
+Las partes dejan constancia de que el presente instrumento constituye un boleto de compraventa preliminar, sujeto a revisión y a la escritura traslativa de dominio ante escribano público.
+
+
+_______________________                    _______________________
+        EL VENDEDOR                                  EL COMPRADOR`;
+
+  document.getElementById('bolPreviewContent').textContent = texto;
+  document.getElementById('bolPreviewBox').style.display = 'block';
+  window._bolTextoActual = texto;
+});
+
+document.getElementById('bolCopiarBtn').addEventListener('click', () => {
+  navigator.clipboard.writeText(window._bolTextoActual || '');
+  const btn = document.getElementById('bolCopiarBtn');
+  const original = btn.textContent;
+  btn.textContent = '✓ Copiado';
+  setTimeout(() => { btn.textContent = original; }, 1500);
+});
+
+document.getElementById('bolDescargarBtn').addEventListener('click', () => {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const texto = window._bolTextoActual || '';
+  doc.setFont('helvetica'); doc.setFontSize(11);
+  const lines = doc.splitTextToSize(texto, 170);
+  doc.text(lines, 20, 25);
+  doc.save('Boleto_compraventa_MiPropIA.pdf');
+});
+
+/* ---------- Tasación comparable ---------- */
+function loadComparables(){ return JSON.parse(localStorage.getItem('mipropia_comparables') || '[]'); }
+function saveComparables(list){ localStorage.setItem('mipropia_comparables', JSON.stringify(list)); }
+
+function renderComparables(){
+  const list = loadComparables();
+  const tbody = document.getElementById('tasCompTbody');
+  const emptyEl = document.getElementById('tasCompEmpty');
+  if (!list.length){ tbody.innerHTML = ''; emptyEl.style.display = 'block'; calcTasacion(); return; }
+  emptyEl.style.display = 'none';
+  tbody.innerHTML = list.map((c, idx) => {
+    const valorM2 = c.m2 > 0 ? (c.precio / c.m2) : 0;
+    return `<tr>
+      <td>${c.ref}</td>
+      <td>${c.m2}</td>
+      <td>${fmtMoney(c.precio)}</td>
+      <td>${fmtMoney(Math.round(valorM2))}</td>
+      <td><button data-idx="${idx}" class="delCompBtn" style="border:none;background:none;color:#c33;cursor:pointer;">Eliminar</button></td>
+    </tr>`;
+  }).join('');
+  tbody.querySelectorAll('.delCompBtn').forEach(b => b.addEventListener('click', () => {
+    const list2 = loadComparables(); list2.splice(parseInt(b.dataset.idx), 1); saveComparables(list2); renderComparables();
+  }));
+  calcTasacion();
+}
+renderComparables();
+
+document.getElementById('tasCompAddBtn').addEventListener('click', () => {
+  const ref = document.getElementById('tasCompRef').value.trim();
+  const m2 = parseFloat(document.getElementById('tasCompM2').value) || 0;
+  const precio = parseFloat(document.getElementById('tasCompPrecio').value) || 0;
+  if (!ref || !m2 || !precio) return;
+  const list = loadComparables();
+  list.push({ ref, m2, precio });
+  saveComparables(list);
+  document.getElementById('tasCompRef').value = '';
+  document.getElementById('tasCompM2').value = '';
+  document.getElementById('tasCompPrecio').value = '';
+  renderComparables();
+});
+
+function calcTasacion(){
+  const list = loadComparables();
+  const m2Propia = parseFloat(document.getElementById('tasM2Propia').value) || 0;
+  if (!list.length){
+    document.getElementById('tasValorM2').textContent = '—';
+    document.getElementById('tasRangoM2').textContent = '';
+    document.getElementById('tasValorTotal').textContent = '—';
+    document.getElementById('tasRangoTotal').textContent = '';
+    return;
+  }
+  const valoresM2 = list.filter(c => c.m2 > 0).map(c => c.precio / c.m2);
+  const promedio = valoresM2.reduce((a,b) => a+b, 0) / valoresM2.length;
+  const min = Math.min(...valoresM2);
+  const max = Math.max(...valoresM2);
+  document.getElementById('tasValorM2').textContent = fmtMoney(Math.round(promedio)) + '/m²';
+  document.getElementById('tasRangoM2').textContent = `Rango de comparables: ${fmtMoney(Math.round(min))} – ${fmtMoney(Math.round(max))} por m²`;
+  if (m2Propia > 0){
+    const valorEstimado = promedio * m2Propia;
+    const valorMin = min * m2Propia;
+    const valorMax = max * m2Propia;
+    document.getElementById('tasValorTotal').textContent = fmtMoney(Math.round(valorEstimado));
+    document.getElementById('tasRangoTotal').textContent = `Rango estimado: ${fmtMoney(Math.round(valorMin))} – ${fmtMoney(Math.round(valorMax))}`;
+  } else {
+    document.getElementById('tasValorTotal').textContent = 'Cargá los m² de tu propiedad';
+    document.getElementById('tasRangoTotal').textContent = '';
+  }
+}
+document.getElementById('tasM2Propia').addEventListener('input', calcTasacion);
+
+/* ---------- Verificación documental ---------- */
+const VERIF_CHECKLIST_ITEMS = [
+  'Escritura o título de propiedad',
+  'Informe de dominio actualizado',
+  'Certificado de inhibiciones del vendedor',
+  'Libre deuda de impuesto inmobiliario / ABL',
+  'Libre deuda de expensas (si aplica)',
+  'Boleto de compraventa firmado',
+  'DNI de comprador y vendedor',
+  'Planos aprobados (si hay reforma o ampliación)',
+  'Reglamento de copropiedad (si es PH o consorcio)'
+];
+
+function loadVerifChecklist(){ return JSON.parse(localStorage.getItem('mipropia_verif_checklist') || '{}'); }
+function saveVerifChecklist(state){ localStorage.setItem('mipropia_verif_checklist', JSON.stringify(state)); }
+
+function renderVerifChecklist(){
+  const state = loadVerifChecklist();
+  const container = document.getElementById('verifChecklist');
+  container.innerHTML = VERIF_CHECKLIST_ITEMS.map((item, idx) => `
+    <label style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;cursor:pointer;">
+      <input type="checkbox" data-idx="${idx}" ${state[idx] ? 'checked' : ''} style="width:17px;height:17px;flex-shrink:0;">
+      ${item}
+    </label>
+  `).join('');
+  container.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', () => {
+    const s = loadVerifChecklist();
+    s[cb.dataset.idx] = cb.checked;
+    saveVerifChecklist(s);
+  }));
+}
+renderVerifChecklist();
+
+const verifDropzone = document.getElementById('verifDropzone');
+const verifFileInput = document.getElementById('verifFileInput');
+const verifResult = document.getElementById('verifResult');
+
+verifDropzone.addEventListener('click', () => verifFileInput.click());
+verifDropzone.addEventListener('dragover', (e) => { e.preventDefault(); verifDropzone.style.borderColor = 'var(--brand-light)'; });
+verifDropzone.addEventListener('dragleave', () => { verifDropzone.style.borderColor = 'var(--border)'; });
+verifDropzone.addEventListener('drop', (e) => {
+  e.preventDefault(); verifDropzone.style.borderColor = 'var(--border)';
+  if (e.dataTransfer.files[0]) analizarDocumentoVerif(e.dataTransfer.files[0]);
+});
+verifFileInput.addEventListener('change', (e) => { if (e.target.files[0]) analizarDocumentoVerif(e.target.files[0]); });
+
+const SYSTEM_PROMPT_VERIF = `Sos un analista documental para operaciones inmobiliarias en Argentina. Vas a recibir el texto de un informe de dominio, certificado de inhibiciones, libre deuda u otro documento registral/administrativo relacionado con una compraventa. Respondé EXCLUSIVAMENTE con un objeto JSON válido (sin texto adicional, sin markdown, sin backticks) con esta forma exacta:
+{"tipo_documento":"informe_dominio|inhibiciones|libre_deuda|otro","titular":"...","estado":"...","resumen":"...","alertas":["..."]}
+En alertas marcá gravámenes, embargos, inhibiciones, deudas o cualquier dato que deba revisar un escribano antes de avanzar con la operación. Si no hay alertas, devolvé un array vacío.`;
+
+async function analizarDocumentoVerif(file){
+  const key = getApiKey();
+  if (!key){ verifResult.innerHTML = '<p class="empty">Cargá tu API key de Anthropic en el panel izquierdo para analizar documentos.</p>'; return; }
+  if (file.type !== 'application/pdf'){ verifResult.innerHTML = '<p class="empty">Por ahora solo se admiten archivos PDF.</p>'; return; }
+
+  verifResult.innerHTML = '<div class="loading" style="color:var(--brand-light);font-size:20px;margin-top:16px;"><span></span><span></span><span></span></div>';
+  try {
+    const text = await extractPdfText(file);
+    const raw = await callClaude(
+      [{ role: 'user', content: `Documento a analizar:\n\n${text.slice(0, 18000)}` }],
+      SYSTEM_PROMPT_VERIF,
+      1000
+    );
+    let data;
+    try { data = JSON.parse(raw.trim().replace(/^```json/, '').replace(/```$/, '').trim()); }
+    catch(parseErr){ throw new Error('La IA no devolvió un JSON válido. Probá de nuevo.'); }
+
+    const alerts = (data.alertas || []).map(a => `<li>${a}</li>`).join('');
+    verifResult.innerHTML = `
+      <div class="doc-card" style="margin-top:18px;"><h4>Tipo de documento</h4><div class="val">${data.tipo_documento || '—'}</div></div>
+      <div class="calc-grid">
+        <div class="doc-card"><h4>Titular</h4><div class="val">${data.titular || '—'}</div></div>
+        <div class="doc-card"><h4>Estado</h4><div class="val">${data.estado || '—'}</div></div>
+      </div>
+      <div class="doc-card"><h4>Resumen</h4><div class="val">${data.resumen || '—'}</div></div>
+      <div class="doc-card"><h4>⚠️ Alertas</h4>${alerts ? `<ul class="alert-list">${alerts}</ul>` : '<p class="val muted">Sin alertas detectadas.</p>'}</div>
+      <p class="disclaimer">Verificación de apoyo — confirmá siempre con el Registro de la Propiedad y tu escribano antes de firmar.</p>
+    `;
+  } catch(err){
+    verifResult.innerHTML = `<p class="empty">⚠️ ${err.message.slice(0,220)}</p>`;
+  }
+}
 </script>
 </body>
 </html>
