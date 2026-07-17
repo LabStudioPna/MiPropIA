@@ -69,6 +69,27 @@
   .field textarea{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--border);font-size:16px;font-family:inherit;background:var(--bg);color:var(--text);resize:vertical;min-height:70px;}
   .result-box{background:var(--bg-alt);border-radius:12px;padding:18px;margin-top:6px;}
   .result-box .big{font-size:28px;font-family:'Poppins',sans-serif;font-weight:700;color:var(--brand-light);}
+  .result-box .row-mini{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-top:1px dashed var(--border);margin-top:8px;}
+
+  .animal-form{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:20px;}
+  table.animales{width:100%;border-collapse:collapse;font-size:13.5px;margin-bottom:10px;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table.animales th,table.animales td{padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;}
+  .animal-card{border:1px solid var(--border);border-radius:14px;padding:20px;margin-top:18px;}
+  .animal-card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+  .animal-card h3{font-size:19px;margin:0 0 4px;}
+  .animal-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:16px 0;}
+  .animal-meta div{background:var(--bg-alt);border-radius:10px;padding:10px 12px;}
+  .animal-meta .lbl{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.03em;}
+  .animal-meta .v{font-size:14.5px;font-weight:600;margin-top:2px;}
+  .subtab-row{display:flex;gap:8px;margin:18px 0 14px;flex-wrap:wrap;}
+  .subtab-btn{border:1px solid var(--border);background:var(--bg-alt);color:var(--text-muted);padding:8px 14px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;}
+  .subtab-btn.active{background:var(--brand);color:#fff;border-color:var(--brand);}
+  .subpanel{display:none;}
+  .subpanel.active{display:block;}
+  .estado-pill{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;}
+  .estado-pill.disponible{background:rgba(58,140,90,.15);color:var(--brand-light);}
+  .estado-pill.reservada{background:rgba(201,123,61,.15);color:var(--accent);}
+  .estado-pill.vendida{background:rgba(150,150,150,.2);color:var(--text-muted);}
 
   .venc-form{display:grid;grid-template-columns:1.3fr 1fr .8fr auto;gap:12px;align-items:end;margin-bottom:24px;}
   table.venc{width:100%;border-collapse:collapse;font-size:14px;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}
@@ -99,6 +120,8 @@
     .calc-grid{grid-template-columns:1fr !important;}
     .venc-form{grid-template-columns:1fr !important;}
     .mini-form{grid-template-columns:1fr !important;}
+    .animal-form{grid-template-columns:1fr 1fr !important;}
+    .animal-meta{grid-template-columns:1fr 1fr !important;}
     .app-main{padding:18px;}
     .chat-log{height:320px;}
   }
@@ -133,6 +156,8 @@
       <button class="tab-btn" data-tab="boletos">📝 Boletos</button>
       <button class="tab-btn" data-tab="tasacion">🏷️ Tasación</button>
       <button class="tab-btn" data-tab="verificacion">🔍 Verificación</button>
+      <button class="tab-btn" data-tab="cartera">🏠 Cartera</button>
+      <button class="tab-btn" data-tab="comisiones">💰 Comisiones</button>
     </div>
 
     <div class="keybox">
@@ -253,6 +278,36 @@
         </div>
       </div>
       <p class="disclaimer">⚠️ Los porcentajes de sellado, comisión e impuesto inmobiliario son valores de referencia (pueden variar por exenciones, montos mínimos no imponibles, categoría de la propiedad y actualizaciones). MiPropIA no reemplaza la verificación oficial ante ARBA / Rentas provincial o municipal correspondiente.</p>
+
+      <h3 style="font-size:15px;margin-top:28px;border-top:1px solid var(--border);padding-top:22px;">🏦 Crédito hipotecario — cuota UVA estimada</h3>
+      <div class="calc-grid">
+        <div>
+          <div class="field">
+            <label>Monto del crédito (UVA o $)</label>
+            <input type="number" id="creditoMonto" placeholder="Ej: 50000000">
+          </div>
+          <div class="field">
+            <label>Plazo (años)</label>
+            <input type="number" id="creditoPlazo" value="20">
+          </div>
+          <div class="field">
+            <label>Tasa nominal anual (TNA %)</label>
+            <input type="number" id="creditoTasa" value="8.5" step="0.1">
+          </div>
+          <div class="field">
+            <label>Valor UVA hoy ($, opcional)</label>
+            <input type="number" id="creditoValorUva" placeholder="Ej: 1450">
+          </div>
+        </div>
+        <div class="result-box">
+          <div class="muted" style="font-size:12.5px;">Cuota mensual estimada (sistema francés)</div>
+          <div class="big" id="creditoCuota">—</div>
+          <div class="row-mini"><span>En UVAs</span><span id="creditoCuotaUva">—</span></div>
+          <div class="row-mini"><span>Total de cuotas del crédito</span><span id="creditoPlazoMeses">—</span></div>
+          <div class="row-mini"><span>Total a pagar (sin ajuste por UVA)</span><span id="creditoTotalPagar">—</span></div>
+        </div>
+      </div>
+      <p class="disclaimer">⚠️ La cuota UVA se ajusta mensualmente por el coeficiente de actualización (CER/UVA) y el sueldo del comprador debería ajustarse por el mismo índice — esta es una estimación en el momento cero, no contempla la evolución del valor UVA a lo largo del crédito. Confirmá siempre la simulación oficial con el banco.</p>
     </section>
 
     <!-- RENTABILIDAD -->
@@ -409,6 +464,111 @@
       </div>
       <div id="verifResult"></div>
       <p class="disclaimer">⚠️ MiPropIA no reemplaza la verificación registral oficial (Registro de la Propiedad) ni el asesoramiento de un escribano — es una herramienta de apoyo para agilizar la primera lectura.</p>
+
+      <h3 style="font-size:15px;margin-top:28px;border-top:1px solid var(--border);padding-top:22px;">Checklist para Alquiler (locación)</h3>
+      <p class="sub" style="margin-bottom:10px;">La contraparte del checklist de compraventa, pensada para una operación de alquiler.</p>
+      <div id="verifChecklistAlquiler"></div>
+    </section>
+
+    <!-- CARTERA DE PROPIEDADES -->
+    <section class="panel" id="panel-cartera">
+      <div id="carteraListView">
+        <h2>🏠 Cartera de propiedades</h2>
+        <p class="sub">Tus propiedades en gestión: disponibles, reservadas y vendidas, con los datos clave a mano.</p>
+        <div class="animal-form">
+          <div class="field" style="margin-bottom:0;"><label>Dirección</label><input type="text" id="propDireccion" placeholder="Ej: Av. Rivadavia 4500, CABA"></div>
+          <div class="field" style="margin-bottom:0;"><label>Tipo</label>
+            <select id="propTipo">
+              <option>Departamento</option><option>Casa</option><option>PH</option><option>Local comercial</option><option>Oficina</option><option>Lote / Terreno</option><option>Otro</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:0;"><label>m²</label><input type="number" id="propM2" placeholder="Ej: 65"></div>
+          <div class="field" style="margin-bottom:0;"><label>Ambientes</label><input type="number" id="propAmbientes" placeholder="Ej: 3"></div>
+          <div class="field" style="margin-bottom:0;"><label>Precio (USD o $)</label><input type="text" id="propPrecio" placeholder="Ej: USD 120.000"></div>
+          <div class="field" style="margin-bottom:0;"><label>Estado</label>
+            <select id="propEstado"><option value="disponible">Disponible</option><option value="reservada">Reservada</option><option value="vendida">Vendida</option></select>
+          </div>
+          <div class="field" style="margin-bottom:0;"><label>Cliente / Propietario</label><input type="text" id="propCliente" placeholder="Nombre"></div>
+          <div class="field" style="margin-bottom:0;display:flex;align-items:flex-end;"><button class="btn btn-brand" id="btnAddProp" style="width:100%;">+ Agregar propiedad</button></div>
+        </div>
+        <table class="animales">
+          <thead><tr><th>Dirección</th><th>Tipo</th><th>m²</th><th>Precio</th><th>Estado</th><th>Cliente</th><th></th></tr></thead>
+          <tbody id="propTableBody"></tbody>
+        </table>
+        <div id="propEmpty" class="empty" style="display:none;">Todavía no cargaste ninguna propiedad.</div>
+      </div>
+
+      <div id="carteraDetailView" style="display:none;">
+        <a href="#" id="propBackLink" style="font-size:13.5px;color:var(--text-muted);text-decoration:none;">← Volver a la cartera</a>
+        <div class="animal-card">
+          <div class="top">
+            <div><h3 id="propDetDireccion">—</h3><span class="estado-pill" id="propDetEstado">—</span></div>
+            <button class="btn btn-ghost" id="btnDeleteProp" style="border-color:#c33;color:#c33;font-size:12.5px;padding:8px 12px;">🗑️ Eliminar</button>
+          </div>
+          <div class="animal-meta">
+            <div><div class="lbl">Tipo</div><div class="v" id="propDetTipo">—</div></div>
+            <div><div class="lbl">m²</div><div class="v" id="propDetM2">—</div></div>
+            <div><div class="lbl">Ambientes</div><div class="v" id="propDetAmbientes">—</div></div>
+            <div><div class="lbl">Precio</div><div class="v" id="propDetPrecio">—</div></div>
+            <div><div class="lbl">Cliente / Propietario</div><div class="v" id="propDetCliente">—</div></div>
+            <div><div class="lbl">Cambiar estado</div><div class="v"><select id="propDetEstadoSelect" style="font-size:13px;padding:4px 6px;border-radius:6px;border:1px solid var(--border);"><option value="disponible">Disponible</option><option value="reservada">Reservada</option><option value="vendida">Vendida</option></select></div></div>
+          </div>
+
+          <div class="subtab-row">
+            <button class="subtab-btn active" data-psub="aviso">📢 Aviso para portales</button>
+            <button class="subtab-btn" data-psub="visitas">📅 Visitas</button>
+          </div>
+
+          <div class="subpanel active" id="sub-prop-aviso">
+            <p class="sub" style="margin-bottom:10px;">Generá el texto listo para pegar en Zonaprop, Argenprop u otro portal, a partir de los datos ya cargados.</p>
+            <div class="field"><label>Detalles adicionales (opcional: amenities, orientación, expensas, etc.)</label><textarea id="avisoExtra" placeholder="Ej: balcón, cochera, luminoso, expensas $45.000"></textarea></div>
+            <button class="btn btn-brand" id="btnGenerarAviso">✨ Generar aviso</button>
+            <div class="result-box" style="margin-top:16px;display:none;" id="avisoResultBox">
+              <div class="muted" style="font-size:12.5px;margin-bottom:8px;">Texto generado — copialo y pegalo en el portal</div>
+              <textarea id="avisoTexto" style="width:100%;min-height:180px;padding:12px;border-radius:9px;border:1px solid var(--border);font-family:inherit;font-size:14px;background:var(--bg);color:var(--text);"></textarea>
+              <button class="btn btn-ghost" id="btnCopiarAviso" style="margin-top:10px;font-size:12.5px;padding:8px 14px;">📋 Copiar texto</button>
+            </div>
+          </div>
+
+          <div class="subpanel" id="sub-prop-visitas">
+            <div class="mini-form">
+              <div class="field" style="margin-bottom:0;"><label>Fecha</label><input type="date" id="visitaFecha"></div>
+              <div class="field" style="margin-bottom:0;"><label>Hora</label><input type="time" id="visitaHora"></div>
+              <div class="field" style="margin-bottom:0;"><label>Cliente</label><input type="text" id="visitaCliente" placeholder="Nombre"></div>
+              <button class="btn btn-brand" id="btnAddVisita" style="height:44px;">+</button>
+            </div>
+            <table class="mini">
+              <thead><tr><th>Fecha</th><th>Hora</th><th>Cliente</th><th>Estado</th><th></th></tr></thead>
+              <tbody id="visitasTableBody"></tbody>
+            </table>
+            <div id="visitasEmpty" class="empty" style="display:none;">No hay visitas agendadas para esta propiedad.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMISIONES -->
+    <section class="panel" id="panel-comisiones">
+      <h2>💰 Comisiones ganadas</h2>
+      <p class="sub">Cada operación cerrada con su comisión — tu propio "cuánto facturé este mes" sin abrir otra planilla.</p>
+      <div class="mini-form" style="grid-template-columns:1.3fr 1fr .9fr .8fr .8fr auto;">
+        <div class="field" style="margin-bottom:0;"><label>Fecha</label><input type="date" id="comFecha"></div>
+        <div class="field" style="margin-bottom:0;"><label>Propiedad / Cliente</label><input type="text" id="comPropiedad" placeholder="Ej: Av. Rivadavia 4500"></div>
+        <div class="field" style="margin-bottom:0;"><label>Operación</label><select id="comTipo"><option value="venta">Venta</option><option value="alquiler">Alquiler</option></select></div>
+        <div class="field" style="margin-bottom:0;"><label>Monto operación</label><input type="number" id="comMonto" placeholder="Ej: 120000"></div>
+        <div class="field" style="margin-bottom:0;"><label>% comisión</label><input type="number" id="comPorcentaje" value="3" step="0.5"></div>
+        <button class="btn btn-brand" id="btnAddComision" style="height:44px;">+</button>
+      </div>
+      <table class="mini">
+        <thead><tr><th>Fecha</th><th>Propiedad / Cliente</th><th>Operación</th><th>Monto</th><th>%</th><th>Comisión</th><th></th></tr></thead>
+        <tbody id="comisionesTableBody"></tbody>
+      </table>
+      <div id="comisionesEmpty" class="empty" style="display:none;">Todavía no cargaste ninguna comisión.</div>
+      <div class="result-box" style="margin-top:18px;max-width:340px;">
+        <div class="muted" style="font-size:12.5px;">Total facturado en comisiones</div>
+        <div class="big" id="comisionesTotal">$0</div>
+        <div class="row-mini"><span>Este mes</span><span id="comisionesTotalMes">$0</span></div>
+      </div>
     </section>
 
   </main>
@@ -1034,6 +1194,282 @@ async function analizarDocumentoVerif(file){
     verifResult.innerHTML = `<p class="empty">⚠️ ${err.message.slice(0,220)}</p>`;
   }
 }
+
+/* ---------- Checklist Alquiler ---------- */
+const VERIF_CHECKLIST_ALQUILER_ITEMS = [
+  'DNI de inquilino y garante',
+  'Recibo de sueldo / constancia de ingresos del inquilino',
+  'Garantía propietaria o seguro de caución',
+  'Informe de deuda / antecedentes del inquilino',
+  'Seguro de responsabilidad civil / incendio',
+  'Contrato de locación firmado (Código Civil y Comercial, DNU 70/2023)',
+  'Inventario del inmueble (si está amoblado)',
+  'Comprobante de depósito en garantía'
+];
+function loadVerifChecklistAlquiler(){ return JSON.parse(localStorage.getItem('mipropia_verif_checklist_alquiler') || '{}'); }
+function saveVerifChecklistAlquiler(state){ localStorage.setItem('mipropia_verif_checklist_alquiler', JSON.stringify(state)); }
+function renderVerifChecklistAlquiler(){
+  const state = loadVerifChecklistAlquiler();
+  const container = document.getElementById('verifChecklistAlquiler');
+  container.innerHTML = VERIF_CHECKLIST_ALQUILER_ITEMS.map((item, idx) => `
+    <label style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;cursor:pointer;">
+      <input type="checkbox" data-idx="${idx}" ${state[idx] ? 'checked' : ''} style="width:17px;height:17px;flex-shrink:0;">
+      ${item}
+    </label>
+  `).join('');
+  container.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', () => {
+    const s = loadVerifChecklistAlquiler();
+    s[cb.dataset.idx] = cb.checked;
+    saveVerifChecklistAlquiler(s);
+  }));
+}
+renderVerifChecklistAlquiler();
+
+/* ---------- Crédito hipotecario / cuota UVA ---------- */
+function calcCredito(){
+  const monto = parseFloat(document.getElementById('creditoMonto').value) || 0;
+  const anios = parseFloat(document.getElementById('creditoPlazo').value) || 0;
+  const tna = parseFloat(document.getElementById('creditoTasa').value) || 0;
+  const valorUva = parseFloat(document.getElementById('creditoValorUva').value) || 0;
+  if (!monto || !anios || !tna){ return; }
+  const n = anios * 12;
+  const i = (tna / 100) / 12;
+  const cuota = i === 0 ? (monto / n) : (monto * i) / (1 - Math.pow(1 + i, -n));
+  document.getElementById('creditoCuota').textContent = '$' + cuota.toLocaleString('es-AR', {maximumFractionDigits:0});
+  document.getElementById('creditoPlazoMeses').textContent = n + ' cuotas';
+  document.getElementById('creditoTotalPagar').textContent = '$' + (cuota * n).toLocaleString('es-AR', {maximumFractionDigits:0});
+  document.getElementById('creditoCuotaUva').textContent = valorUva > 0 ? (cuota / valorUva).toLocaleString('es-AR', {maximumFractionDigits:1}) + ' UVAs' : '—';
+}
+['creditoMonto','creditoPlazo','creditoTasa','creditoValorUva'].forEach(id => document.getElementById(id).addEventListener('input', calcCredito));
+
+/* ---------- Cartera de propiedades ---------- */
+function loadPropiedades(){ return JSON.parse(localStorage.getItem('mipropia_propiedades') || '[]'); }
+function savePropiedades(list){ localStorage.setItem('mipropia_propiedades', JSON.stringify(list)); }
+
+const carteraListView = document.getElementById('carteraListView');
+const carteraDetailView = document.getElementById('carteraDetailView');
+const propTableBody = document.getElementById('propTableBody');
+const propEmpty = document.getElementById('propEmpty');
+let propActualId = null;
+
+function estadoLabel(e){ return e === 'disponible' ? 'Disponible' : e === 'reservada' ? 'Reservada' : 'Vendida'; }
+
+function renderPropiedades(){
+  const list = loadPropiedades();
+  propEmpty.style.display = list.length ? 'none' : 'block';
+  propTableBody.innerHTML = list.map(p => `
+    <tr style="cursor:pointer;" data-id="${p.id}">
+      <td>${p.direccion}</td>
+      <td>${p.tipo}</td>
+      <td>${p.m2 || '—'}</td>
+      <td>${p.precio || '—'}</td>
+      <td><span class="estado-pill ${p.estado}">${estadoLabel(p.estado)}</span></td>
+      <td>${p.cliente || '—'}</td>
+      <td><button class="btn btn-ghost" data-openprop="${p.id}" style="font-size:12px;padding:6px 10px;">Ver →</button></td>
+    </tr>
+  `).join('');
+  propTableBody.querySelectorAll('[data-openprop]').forEach(btn => btn.addEventListener('click', (e) => {
+    e.stopPropagation(); openPropDetail(btn.dataset.openprop);
+  }));
+  propTableBody.querySelectorAll('tr[data-id]').forEach(tr => tr.addEventListener('click', () => openPropDetail(tr.dataset.id)));
+}
+renderPropiedades();
+
+document.getElementById('btnAddProp').addEventListener('click', () => {
+  const direccion = document.getElementById('propDireccion').value.trim();
+  if (!direccion) return;
+  const list = loadPropiedades();
+  list.push({
+    id: Date.now().toString(),
+    direccion,
+    tipo: document.getElementById('propTipo').value,
+    m2: document.getElementById('propM2').value,
+    ambientes: document.getElementById('propAmbientes').value,
+    precio: document.getElementById('propPrecio').value,
+    estado: document.getElementById('propEstado').value,
+    cliente: document.getElementById('propCliente').value,
+    visitas: []
+  });
+  savePropiedades(list);
+  ['propDireccion','propM2','propAmbientes','propPrecio','propCliente'].forEach(id => document.getElementById(id).value = '');
+  renderPropiedades();
+});
+
+function openPropDetail(id){
+  propActualId = id;
+  const p = loadPropiedades().find(x => x.id === id);
+  if (!p) return;
+  carteraListView.style.display = 'none';
+  carteraDetailView.style.display = 'block';
+  document.getElementById('propDetDireccion').textContent = p.direccion;
+  document.getElementById('propDetEstado').textContent = estadoLabel(p.estado);
+  document.getElementById('propDetEstado').className = 'estado-pill ' + p.estado;
+  document.getElementById('propDetTipo').textContent = p.tipo;
+  document.getElementById('propDetM2').textContent = p.m2 || '—';
+  document.getElementById('propDetAmbientes').textContent = p.ambientes || '—';
+  document.getElementById('propDetPrecio').textContent = p.precio || '—';
+  document.getElementById('propDetCliente').textContent = p.cliente || '—';
+  document.getElementById('propDetEstadoSelect').value = p.estado;
+  document.getElementById('avisoResultBox').style.display = 'none';
+  document.getElementById('avisoExtra').value = '';
+  renderVisitas(p);
+}
+document.getElementById('propBackLink').addEventListener('click', (e) => {
+  e.preventDefault();
+  carteraDetailView.style.display = 'none';
+  carteraListView.style.display = 'block';
+  renderPropiedades();
+});
+document.getElementById('btnDeleteProp').addEventListener('click', () => {
+  if (!confirm('¿Eliminar esta propiedad de la cartera?')) return;
+  savePropiedades(loadPropiedades().filter(x => x.id !== propActualId));
+  carteraDetailView.style.display = 'none';
+  carteraListView.style.display = 'block';
+  renderPropiedades();
+});
+document.getElementById('propDetEstadoSelect').addEventListener('change', (e) => {
+  const list = loadPropiedades();
+  const p = list.find(x => x.id === propActualId);
+  if (!p) return;
+  p.estado = e.target.value;
+  savePropiedades(list);
+  document.getElementById('propDetEstado').textContent = estadoLabel(p.estado);
+  document.getElementById('propDetEstado').className = 'estado-pill ' + p.estado;
+});
+
+document.querySelectorAll('[data-psub]').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('[data-psub]').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#carteraDetailView .subpanel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('sub-prop-' + btn.dataset.psub).classList.add('active');
+}));
+
+const SYSTEM_PROMPT_AVISO = `Sos un redactor de avisos inmobiliarios para portales argentinos (Zonaprop, Argenprop). A partir de los datos de una propiedad, escribí un aviso atractivo, claro y honesto, en español rioplatense, de entre 80 y 150 palabras, con un título corto en la primera línea y el cuerpo del aviso después. No inventes datos que no te dieron. Respondé solo con el texto del aviso, sin explicaciones adicionales ni markdown.`;
+
+document.getElementById('btnGenerarAviso').addEventListener('click', async () => {
+  const p = loadPropiedades().find(x => x.id === propActualId);
+  if (!p) return;
+  const key = getApiKey();
+  const box = document.getElementById('avisoResultBox');
+  const extra = document.getElementById('avisoExtra').value.trim();
+  if (!key){ alert('Cargá tu API key de Anthropic en el panel izquierdo para generar el aviso.'); return; }
+  const btn = document.getElementById('btnGenerarAviso');
+  btn.disabled = true; btn.textContent = 'Generando...';
+  try {
+    const datos = `Dirección: ${p.direccion}\nTipo: ${p.tipo}\nm²: ${p.m2 || '—'}\nAmbientes: ${p.ambientes || '—'}\nPrecio: ${p.precio || '—'}\nEstado: ${estadoLabel(p.estado)}\n${extra ? 'Detalles adicionales: ' + extra : ''}`;
+    const texto = await callClaude([{ role: 'user', content: datos }], SYSTEM_PROMPT_AVISO, 500);
+    document.getElementById('avisoTexto').value = texto.trim();
+    box.style.display = 'block';
+  } catch(err){
+    alert('No se pudo generar el aviso: ' + err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = '✨ Generar aviso';
+  }
+});
+document.getElementById('btnCopiarAviso').addEventListener('click', () => {
+  const ta = document.getElementById('avisoTexto');
+  ta.select();
+  navigator.clipboard.writeText(ta.value).then(() => {
+    const btn = document.getElementById('btnCopiarAviso');
+    const orig = btn.textContent;
+    btn.textContent = '✅ Copiado';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+});
+
+/* ---------- Visitas ---------- */
+function renderVisitas(p){
+  const tbody = document.getElementById('visitasTableBody');
+  const visitas = p.visitas || [];
+  document.getElementById('visitasEmpty').style.display = visitas.length ? 'none' : 'block';
+  const hoy = new Date().toISOString().slice(0,10);
+  tbody.innerHTML = visitas.slice().sort((a,b) => (a.fecha+a.hora).localeCompare(b.fecha+b.hora)).map(v => `
+    <tr>
+      <td>${v.fecha}</td>
+      <td>${v.hora || '—'}</td>
+      <td>${v.cliente || '—'}</td>
+      <td>${v.fecha < hoy ? '<span class="muted">Pasada</span>' : '<span style="color:var(--brand-light);font-weight:600;">Próxima</span>'}</td>
+      <td><button class="btn btn-ghost" data-delvisita="${v.id}" style="font-size:12px;padding:5px 9px;">🗑️</button></td>
+    </tr>
+  `).join('');
+  tbody.querySelectorAll('[data-delvisita]').forEach(btn => btn.addEventListener('click', () => {
+    const list = loadPropiedades();
+    const prop = list.find(x => x.id === propActualId);
+    prop.visitas = (prop.visitas || []).filter(v => v.id !== btn.dataset.delvisita);
+    savePropiedades(list);
+    renderVisitas(prop);
+  }));
+}
+document.getElementById('btnAddVisita').addEventListener('click', () => {
+  const fecha = document.getElementById('visitaFecha').value;
+  if (!fecha) return;
+  const list = loadPropiedades();
+  const p = list.find(x => x.id === propActualId);
+  if (!p) return;
+  p.visitas = p.visitas || [];
+  p.visitas.push({
+    id: Date.now().toString(),
+    fecha,
+    hora: document.getElementById('visitaHora').value,
+    cliente: document.getElementById('visitaCliente').value
+  });
+  savePropiedades(list);
+  document.getElementById('visitaFecha').value = '';
+  document.getElementById('visitaHora').value = '';
+  document.getElementById('visitaCliente').value = '';
+  renderVisitas(p);
+});
+
+/* ---------- Comisiones ---------- */
+function loadComisiones(){ return JSON.parse(localStorage.getItem('mipropia_comisiones') || '[]'); }
+function saveComisiones(list){ localStorage.setItem('mipropia_comisiones', JSON.stringify(list)); }
+
+function renderComisiones(){
+  const list = loadComisiones();
+  const tbody = document.getElementById('comisionesTableBody');
+  document.getElementById('comisionesEmpty').style.display = list.length ? 'none' : 'block';
+  tbody.innerHTML = list.slice().sort((a,b) => b.fecha.localeCompare(a.fecha)).map(c => `
+    <tr>
+      <td>${c.fecha}</td>
+      <td>${c.propiedad}</td>
+      <td>${c.tipo === 'venta' ? 'Venta' : 'Alquiler'}</td>
+      <td>$${(parseFloat(c.monto)||0).toLocaleString('es-AR')}</td>
+      <td>${c.porcentaje}%</td>
+      <td><strong>$${c.comision.toLocaleString('es-AR', {maximumFractionDigits:0})}</strong></td>
+      <td><button class="btn btn-ghost" data-delcom="${c.id}" style="font-size:12px;padding:5px 9px;">🗑️</button></td>
+    </tr>
+  `).join('');
+  tbody.querySelectorAll('[data-delcom]').forEach(btn => btn.addEventListener('click', () => {
+    saveComisiones(loadComisiones().filter(c => c.id !== btn.dataset.delcom));
+    renderComisiones();
+  }));
+  const total = list.reduce((s,c) => s + c.comision, 0);
+  const hoyMes = new Date().toISOString().slice(0,7);
+  const totalMes = list.filter(c => c.fecha.slice(0,7) === hoyMes).reduce((s,c) => s + c.comision, 0);
+  document.getElementById('comisionesTotal').textContent = '$' + total.toLocaleString('es-AR', {maximumFractionDigits:0});
+  document.getElementById('comisionesTotalMes').textContent = '$' + totalMes.toLocaleString('es-AR', {maximumFractionDigits:0});
+}
+renderComisiones();
+
+document.getElementById('btnAddComision').addEventListener('click', () => {
+  const fecha = document.getElementById('comFecha').value;
+  const propiedad = document.getElementById('comPropiedad').value.trim();
+  const monto = parseFloat(document.getElementById('comMonto').value) || 0;
+  const porcentaje = parseFloat(document.getElementById('comPorcentaje').value) || 0;
+  if (!fecha || !propiedad || !monto) return;
+  const list = loadComisiones();
+  list.push({
+    id: Date.now().toString(),
+    fecha, propiedad,
+    tipo: document.getElementById('comTipo').value,
+    monto, porcentaje,
+    comision: monto * (porcentaje / 100)
+  });
+  saveComisiones(list);
+  document.getElementById('comPropiedad').value = '';
+  document.getElementById('comMonto').value = '';
+  renderComisiones();
+});
 </script>
 </body>
 </html>
