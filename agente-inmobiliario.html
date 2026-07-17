@@ -977,6 +977,81 @@ document.getElementById('vencAddBtn').addEventListener('click', () => {
   renderVenc();
 });
 
+/* ---------- Tasación comparable ---------- */
+let comparables = JSON.parse(localStorage.getItem('mipropia_comparables') || '[]');
+
+function renderComparables(){
+  const tbody = document.getElementById('tasCompTbody');
+  const emptyEl = document.getElementById('tasCompEmpty');
+  if (!comparables.length){ tbody.innerHTML = ''; emptyEl.style.display = 'block'; return; }
+  emptyEl.style.display = 'none';
+
+  tbody.innerHTML = comparables.map((comp, idx) => {
+    const m2_precio = comp.m2 > 0 ? (comp.precio / comp.m2).toFixed(2) : '—';
+    return `<tr>
+      <td>${comp.ref}</td>
+      <td>${comp.m2} m²</td>
+      <td>USD ${parseFloat(comp.precio).toLocaleString('es-AR')}</td>
+      <td>USD ${m2_precio}/m²</td>
+      <td><button data-idx="${idx}" class="delCompBtn" style="border:none;background:none;color:#c33;cursor:pointer;font-size:12px;">Eliminar</button></td>
+    </tr>`;
+  }).join('');
+
+  tbody.querySelectorAll('.delCompBtn').forEach(b => b.addEventListener('click', () => {
+    comparables.splice(parseInt(b.dataset.idx), 1);
+    localStorage.setItem('mipropia_comparables', JSON.stringify(comparables));
+    renderComparables();
+    updateTasResult();
+  }));
+
+  updateTasResult();
+}
+
+function updateTasResult(){
+  const m2Propia = parseFloat(document.getElementById('tasM2Propia').value) || 0;
+  if (comparables.length === 0){
+    document.getElementById('tasValorM2').textContent = '—';
+    document.getElementById('tasRangoM2').textContent = '';
+    document.getElementById('tasValorTotal').textContent = '—';
+    document.getElementById('tasRangoTotal').textContent = '';
+    return;
+  }
+
+  const precios_m2 = comparables.map(c => c.m2 > 0 ? c.precio / c.m2 : 0).filter(p => p > 0);
+  const promedio = precios_m2.reduce((a,b) => a + b, 0) / precios_m2.length;
+  const minimo = Math.min(...precios_m2);
+  const maximo = Math.max(...precios_m2);
+
+  document.getElementById('tasValorM2').textContent = 'USD ' + promedio.toFixed(2) + '/m²';
+  document.getElementById('tasRangoM2').textContent = `Rango: USD ${minimo.toFixed(2)} - ${maximo.toFixed(2)}/m²`;
+
+  if (m2Propia > 0){
+    const total = promedio * m2Propia;
+    document.getElementById('tasValorTotal').textContent = 'USD ' + total.toLocaleString('es-AR', {maximumFractionDigits: 0});
+    document.getElementById('tasRangoTotal').textContent = `Rango: USD ${(minimo*m2Propia).toLocaleString('es-AR', {maximumFractionDigits: 0})} - ${(maximo*m2Propia).toLocaleString('es-AR', {maximumFractionDigits: 0})}`;
+  }
+}
+
+document.getElementById('tasCompAddBtn').addEventListener('click', () => {
+  const ref = document.getElementById('tasCompRef').value.trim();
+  const m2 = parseFloat(document.getElementById('tasCompM2').value) || 0;
+  const precio = parseFloat(document.getElementById('tasCompPrecio').value) || 0;
+  if (!ref || m2 <= 0 || precio <= 0) return;
+  comparables.push({ ref, m2, precio });
+  localStorage.setItem('mipropia_comparables', JSON.stringify(comparables));
+  document.getElementById('tasCompRef').value = '';
+  document.getElementById('tasCompM2').value = '';
+  document.getElementById('tasCompPrecio').value = '';
+  renderComparables();
+});
+
+['tasM2Propia'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', updateTasResult);
+});
+
+renderComparables();
+
 /* ---------- Generador de boletos de compraventa ---------- */
 document.getElementById('bolGenerarBtn').addEventListener('click', () => {
   const vendedorNombre = document.getElementById('bolVendedorNombre').value.trim();

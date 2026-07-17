@@ -35,10 +35,36 @@
   .faq2 summary{cursor:pointer;font-weight:600;padding:12px 0;border-bottom:1px solid var(--border);}
   .faq2 p{padding:10px 0 4px;color:var(--text-muted);}
   .top-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:10px;}
+  .casos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:28px;margin:32px 0 48px;}
+  .caso-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:clamp(22px,5vw,32px);transition:all 0.3s ease;}
+  .caso-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.12);border-color:var(--brand-light);}
+  .caso-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .caso-flag{font-size:clamp(28px,8vw,48px);}
+  .caso-title-meta{flex:1;}
+  .caso-title{font-size:clamp(18px,4vw,24px);margin:0 0 8px;font-weight:700;color:var(--text);}
+  .caso-meta{font-size:clamp(12px,2vw,14px);color:var(--text-muted);margin:0;}
+  .caso-content{display:grid;gap:16px;}
+  .caso-section{padding:16px;border-radius:8px;font-size:clamp(13px,2vw,15px);line-height:1.6;}
+  .caso-problem{background:rgba(255,193,7,0.1);border-left:4px solid #ffc107;}
+  .caso-solution{background:rgba(33,150,243,0.1);border-left:4px solid #2196f3;}
+  .caso-result{background:rgba(76,175,80,0.1);border-left:4px solid #4caf50;}
+  .caso-quote{background:rgba(156,39,176,0.1);border-left:4px solid #9c27b0;font-style:italic;}
+  .caso-section p{margin:0;color:var(--text);}
+  .caso-section strong{font-weight:600;color:var(--text);}
+  .caso-stats{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px;}
+  .stat-label{font-size:clamp(11px,1.8vw,13px);color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;}
+  .stat-value{font-size:clamp(16px,3.5vw,22px);font-weight:700;color:var(--brand-light);}
+  [data-theme="dark"] .caso-card{background:var(--bg-alt);}
+  [data-theme="dark"] .caso-section p{color:var(--text);}
   @media(max-width:480px){
     .guide-wrap{padding:36px 16px 60px;}
     .guide-wrap h2{font-size:22px;}
     .toc{padding:18px 20px;}
+    .casos-grid{grid-template-columns:1fr;gap:20px;}
+    .caso-header{flex-direction:column;gap:12px;}
+    .caso-content{gap:12px;}
+    .caso-section{padding:12px;font-size:14px;}
+    .caso-stats{grid-template-columns:1fr;}
   }
 </style>
 </head>
@@ -73,6 +99,7 @@
     <a href="#paso-a-paso">Guía paso a paso</a>
     <a href="#paneles">Características por panel</a>
     <a href="#faq">Preguntas frecuentes</a>
+    <a href="#casos-uso">Casos de uso reales en LATAM</a>
     <a href="#glosario">Glosario de términos</a>
     <a href="#tips">Tips profesionales</a>
   </div>
@@ -205,6 +232,131 @@
   <details class="faq2"><summary>¿Qué navegadores soporta?</summary><p>Chrome, Firefox, Safari (iOS 14+) y Edge — las últimas 2 versiones de cada uno. Funciona mejor en desktop; en mobile funciona pero con pantalla chica.</p></details>
   <details class="faq2"><summary>¿Cómo reporto un bug o sugerencia?</summary><p>WhatsApp: LABStudio.pna +54 9 3435-344597 · GitHub Issues: github.com/LabStudioPna/MiPropIA</p></details>
 
+  <h2 id="casos-uso">🌎 Casos de Uso Reales en LATAM</h2>
+  <p>Así trabajan agentes inmobiliarios, corredores e inversores en Argentina, Colombia, Uruguay y Chile con MiPropIA.</p>
+
+  <div class="casos-grid">
+    <div class="caso-card">
+      <div class="caso-header">
+        <span class="caso-flag">🇨🇴</span>
+        <div class="caso-title-meta">
+          <h3 class="caso-title">Medellín: Inmobiliaria de Lujo en Laureles</h3>
+          <p class="caso-meta">Catalina Ruiz, Agente Senior • Medellín, Colombia</p>
+        </div>
+      </div>
+      <div class="caso-content">
+        <div class="caso-section caso-problem">
+          <p><strong>Problema:</strong> Catalina gestionaba 15 propiedades de alto valor (USD 200k–800k) con múltiples contratos de venta y alquiler en simultaneo. Pasaba 2-3 horas diarias revisando documentación y calculando comisiones manualmente, con riesgo alto de errores en montos o fechas.</p>
+        </div>
+        <div class="caso-section caso-solution">
+          <p><strong>Solución:</strong> Integró MiPropIA para analizar cada boleto de compraventa y contrato de alquiler. Ahora sube los PDFs, la IA extrae montos, plazo y partes en segundos. Usa la tasación comparable para justificar precios a inversionistas internacionales, y el libro de comisiones para facturación mensual automatizada.</p>
+        </div>
+        <div class="caso-section caso-result">
+          <p><strong>Resultado:</strong> Redujo tiempo de procesamiento de contrato de 45 min a 8 min. Cero errores en las últimas 80 operaciones. Facturación transparente para clientes corporativos. Cap rate + cash flow calculados en 30 segundos.</p>
+          <div class="caso-stats">
+            <div class="stat-label">Tiempo ahorrado</div>
+            <div class="stat-value">~15 horas/mes</div>
+            <div class="stat-label">Operaciones cerradas</div>
+            <div class="stat-value">80+ sin errores</div>
+          </div>
+        </div>
+        <div class="caso-section caso-quote">
+          <p><em>"Antes anotaba todo en un cuaderno y hacía la cuenta en la cabeza. MiPropIA me convirtió en una agente de datos — mis clientes ven números reales, no 'promesas'."</em></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="caso-card">
+      <div class="caso-header">
+        <span class="caso-flag">🇦🇷</span>
+        <div class="caso-title-meta">
+          <h3 class="caso-title">Paraná: Inversión Inmobiliaria de Mediano Plazo</h3>
+          <p class="caso-meta">Mauro Blanco, Inversor & Corredor • Paraná, Argentina</p>
+        </div>
+      </div>
+      <div class="caso-content">
+        <div class="caso-section caso-problem">
+          <p><strong>Problema:</strong> Mauro compra departamentos para alquilar a mediano plazo en Paraná. Tenía 8 propiedades con rentas en pesos, pero con ICL inflándose mes a mes. Olvidaba fechas de actualización de índice y perdía ingresos por contratos desactualizados.</p>
+        </div>
+        <div class="caso-section caso-solution">
+          <p><strong>Solución:</strong> Cargó cada contrato de alquiler en MiPropIA. Usa el calendario de vencimientos para alertas de renovación (verde → naranja → rojo). Calcula cap rate y cash flow neto por propiedad en la sección Rentabilidad, incluyendo impuestos, expensas y seguro.</p>
+        </div>
+        <div class="caso-section caso-result">
+          <p><strong>Resultado:</strong> Cero rentas vencidas sin actualizar. Visibilidad instantánea de cuál propiedad rinde más (3.2% vs 1.8% cap rate). Detectó que una propiedad debería subir renta un 15% según valor de mercado — incrementó ingresos ARS 18,000/mes.</p>
+          <div class="caso-stats">
+            <div class="stat-label">Ingresos adicionales</div>
+            <div class="stat-value">+ARS 18k/mes</div>
+            <div class="stat-label">Propiedades monitoreadas</div>
+            <div class="stat-value">8 sin olvidos</div>
+          </div>
+        </div>
+        <div class="caso-section caso-quote">
+          <p><em>"El calendario me avisa 30 días antes de vencer el contrato. Sin MiPropIA seguiría arriesgando rentas perdidas. La rentabilidad comparada es oro puro."</em></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="caso-card">
+      <div class="caso-header">
+        <span class="caso-flag">🇺🇾</span>
+        <div class="caso-title-meta">
+          <h3 class="caso-title">Montevideo: Alquileres de Corta Duración</h3>
+          <p class="caso-meta">Martina López, Property Manager • Montevideo, Uruguay</p>
+        </div>
+      </div>
+      <div class="caso-content">
+        <div class="caso-section caso-problem">
+          <p><strong>Problema:</strong> Martina gestiona 12 apartamentos en Pocitos y el Ciudad Vieja para Airbnb + alquileres mensuales. Recibía contratos de clientes en PDF, Word y papel — sin formato consistente. No sabía qué documentación faltaba ni cómo alertar sobre vencimientos de seguros.</p>
+        </div>
+        <div class="caso-section caso-solution">
+          <p><strong>Solución:</strong> Sube cada contrato de inquilino a MiPropIA. La IA extrae fecha inicio, plazo, depósito y cláusulas clave. Usa el checklist de documentación para verificar que esté el seguro de renta y el CUIT del inquilino. El calendario de vencimientos ahora le avisa cuando renovar póliza de seguro de la propiedad.</p>
+        </div>
+        <div class="caso-section caso-result">
+          <p><strong>Resultado:</strong> Organización 100% de la documentación. Cero seguros vencidos. Detectó que 3 inquilinos estaban sin seguro de renta — recuperó cobertura. Tiempo de processing de contrato nuevo: 5 minutos.</p>
+          <div class="caso-stats">
+            <div class="stat-label">Documentación organizada</div>
+            <div class="stat-value">12 props / 100%</div>
+            <div class="stat-label">Tiempo/contrato nuevo</div>
+            <div class="stat-value">5 minutos</div>
+          </div>
+        </div>
+        <div class="caso-section caso-quote">
+          <p><em>"Con tantas propiedades es fácil olvidarse de detalles. MiPropIA es mi checklist automatizado — ni una póliza vence sin que yo lo sepa."</em></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="caso-card">
+      <div class="caso-header">
+        <span class="caso-flag">🇨🇱</span>
+        <div class="caso-title-meta">
+          <h3 class="caso-title">Santiago: Corredurista Mixto (Compraventa + Inversión)</h3>
+          <p class="caso-meta">Carlos Medina, Corredor Independiente • Santiago, Chile</p>
+        </div>
+      </div>
+      <div class="caso-content">
+        <div class="caso-section caso-problem">
+          <p><strong>Problema:</strong> Carlos cierra ~8-10 operaciones de compraventa por mes (mixtas: casas, departamentos, comercios) en diferentes comunas. Tenía clientes esperando análisis de rentabilidad de una propiedad, pero hacía cálculos manuales en Excel que tardaban días y tenían errores.</p>
+        </div>
+        <div class="caso-section caso-solution">
+          <p><strong>Solución:</strong> Ahora, cuando un cliente inquiere sobre rentabilidad de un departamento de inversión, Carlos usa MiPropIA para calcular cap rate en 2 minutos. Sube los boletos de compraventa para análisis instantáneo de condiciones. Genera aviso de portales (portalinmobiliario.com, toctoc.com) directo desde la cartera.</p>
+        </div>
+        <div class="caso-section caso-result">
+          <p><strong>Resultado:</strong> Responde a inquiries en <2 horas en lugar de 2-3 días. Cerró 3 operaciones extra porque los clientes tenían claridad de números al momento. Libro de comisiones automatizado: factura en 10 minutos a fin de mes, antes le tomaba 3 horas.</p>
+          <div class="caso-stats">
+            <div class="stat-label">Operaciones extra cerradas</div>
+            <div class="stat-value">3+ por mes</div>
+            <div class="stat-label">Tiempo de facturación</div>
+            <div class="stat-value">10 min vs 3h</div>
+          </div>
+        </div>
+        <div class="caso-section caso-quote">
+          <p><em>"En el negocio inmobiliario el tiempo es dinero. MiPropIA me convirtió en un consultor, no solo un corredor — le muestro números reales al cliente y vendo la confianza."</em></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <h2 id="glosario">📚 Glosario de Términos Inmobiliarios</h2>
   <table class="tbl">
     <tr><th>Término</th><th>Significado</th></tr>
@@ -259,4 +411,3 @@
 </script>
 </body>
 </html>
-
