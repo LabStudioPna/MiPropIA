@@ -1,0 +1,1646 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agente MiPropIA — Chat, contratos, sellado, rentabilidad y vencimientos</title>
+<meta name="description" content="El agente de MiPropIA: chat inmobiliario, análisis de contratos, calculadora de sellado/comisión, rentabilidad de inversión (cap rate) y vencimientos. Corre 100% en tu navegador.">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#1E3A5F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MiPropIA">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  body{background:var(--bg-alt);}
+  .app-shell{max-width:1180px;margin:0 auto;padding:22px 24px 60px;display:grid;grid-template-columns:230px 1fr;gap:22px;min-width:0;}
+  .app-side{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;height:fit-content;position:sticky;top:80px;min-width:0;}
+  .app-side .brand{padding:6px 8px 16px;font-size:17px;}
+  .tab-btn{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:11px 12px;border-radius:10px;border:none;background:transparent;color:var(--text-muted);font-size:14.5px;font-weight:600;cursor:pointer;margin-bottom:4px;}
+  .tab-btn:hover{background:var(--bg-alt);}
+  .tab-btn.active{background:var(--brand);color:#fff;}
+  .keybox{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+  .keybox label{font-size:12px;color:var(--text-muted);font-weight:600;}
+  .keybox input{width:100%;margin-top:6px;padding:9px 10px;border-radius:8px;border:1px solid var(--border);font-size:16px;background:var(--bg);color:var(--text);}
+  .key-status{font-size:11.5px;margin-top:8px;display:flex;align-items:center;gap:6px;}
+  .dot-status{width:8px;height:8px;border-radius:50%;background:#c33;}
+  .dot-status.ok{background:#2E7458;}
+  .app-main{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:26px;min-height:560px;min-width:0;}
+  .panel{display:none;}
+  .panel.active{display:block;}
+  .panel h2{font-size:20px;margin-bottom:4px;}
+  .panel .sub{color:var(--text-muted);font-size:13.5px;margin-bottom:20px;}
+
+  .chat-log{height:400px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;border:1px solid var(--border);border-radius:12px;padding:16px;background:var(--bg-alt);margin-bottom:14px;}
+  .chat-input-row{display:flex;gap:10px;align-items:flex-end;}
+  .chat-input-row textarea{flex:1;padding:12px 14px;border-radius:12px;border:1px solid var(--border);font-family:inherit;font-size:16px;resize:none;min-height:48px;background:var(--bg);color:var(--text);}
+  .icon-btn{background:var(--bg-alt);border:1px solid var(--border);border-radius:10px;width:46px;height:46px;cursor:pointer;font-size:18px;flex-shrink:0;}
+  .msg{max-width:82%;padding:12px 15px;border-radius:14px;margin-bottom:12px;font-size:14.5px;white-space:pre-wrap;}
+  .msg.user{background:var(--bg);border:1px solid var(--border);margin-left:auto;border-bottom-right-radius:4px;}
+  .msg.bot{background:var(--brand);color:#fff;border-bottom-left-radius:4px;}
+  .msg.system{background:transparent;color:var(--text-muted);font-size:12.5px;text-align:center;margin:8px auto;max-width:100%;}
+  .attach-chip{display:inline-flex;align-items:center;gap:6px;background:var(--bg-alt);border:1px solid var(--border);border-radius:999px;padding:5px 12px;font-size:12.5px;margin-bottom:10px;}
+  .attach-chip button{border:none;background:none;cursor:pointer;color:var(--text-muted);font-size:14px;}
+
+  .dropzone{border:2px dashed var(--border);border-radius:14px;padding:36px;text-align:center;cursor:pointer;background:var(--bg-alt);}
+  .dropzone:hover{border-color:var(--brand-light);}
+  .doc-result{margin-top:22px;}
+  .doc-card{border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;background:var(--bg-alt);}
+  .doc-card h4{margin:0 0 8px;font-size:14px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.03em;}
+  .doc-card .val{font-size:15px;}
+  .alert-list{list-style:none;padding:0;margin:0;}
+  .alert-list li{background:rgba(201,123,61,.12);border-left:3px solid var(--accent);padding:9px 12px;border-radius:6px;margin-bottom:8px;font-size:13.5px;}
+  .history-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--border);font-size:13.5px;}
+  .history-item button{border:none;background:none;color:#c33;cursor:pointer;font-size:12px;}
+
+  .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:6px;}
+  .field input,.field select{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--border);font-size:16px;background:var(--bg);color:var(--text);}
+  .field textarea{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--border);font-size:16px;font-family:inherit;background:var(--bg);color:var(--text);resize:vertical;min-height:70px;}
+  .result-box{background:var(--bg-alt);border-radius:12px;padding:18px;margin-top:6px;}
+  .result-box .big{font-size:28px;font-family:var(--serif);font-weight:700;color:var(--brand-light);}
+  .result-box .row-mini{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-top:1px dashed var(--border);margin-top:8px;}
+
+  .animal-form{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:20px;}
+  table.animales{width:100%;border-collapse:collapse;font-size:13.5px;margin-bottom:10px;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table.animales th,table.animales td{padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;}
+  .animal-card{border:1px solid var(--border);border-radius:14px;padding:20px;margin-top:18px;}
+  .animal-card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+  .animal-card h3{font-size:19px;margin:0 0 4px;}
+  .animal-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:16px 0;}
+  .animal-meta div{background:var(--bg-alt);border-radius:10px;padding:10px 12px;}
+  .animal-meta .lbl{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.03em;}
+  .animal-meta .v{font-size:14.5px;font-weight:600;margin-top:2px;}
+  .subtab-row{display:flex;gap:8px;margin:18px 0 14px;flex-wrap:wrap;}
+  .subtab-btn{border:1px solid var(--border);background:var(--bg-alt);color:var(--text-muted);padding:8px 14px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;}
+  .subtab-btn.active{background:var(--brand);color:#fff;border-color:var(--brand);}
+  .subpanel{display:none;}
+  .subpanel.active{display:block;}
+  .estado-pill{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;}
+  .estado-pill.disponible{background:rgba(58,140,90,.15);color:var(--brand-light);}
+  .estado-pill.reservada{background:rgba(201,123,61,.15);color:var(--accent);}
+  .estado-pill.vendida{background:rgba(150,150,150,.2);color:var(--text-muted);}
+
+  .venc-form{display:grid;grid-template-columns:1.3fr 1fr .8fr auto;gap:12px;align-items:end;margin-bottom:24px;}
+  table.venc{width:100%;border-collapse:collapse;font-size:14px;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table.venc th,table.venc td{padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;}
+  .semaforo{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;}
+  .semaforo.rojo{background:#C0392B;}
+  .semaforo.naranja{background:var(--accent);}
+  .semaforo.verde{background:var(--brand-light);}
+
+  .mini-form{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;margin-bottom:14px;}
+  table.mini{width:100%;border-collapse:collapse;font-size:13.5px;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table.mini th,table.mini td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left;}
+
+  .empty{color:var(--text-muted);font-size:14px;text-align:center;padding:30px 0;}
+  .loading{display:inline-flex;gap:4px;align-items:center;}
+  .loading span{width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 1.2s infinite ease-in-out;}
+  .loading span:nth-child(2){animation-delay:.2s;} .loading span:nth-child(3){animation-delay:.4s;}
+  @keyframes blink{0%,80%,100%{opacity:.2;}40%{opacity:1;}}
+  .disclaimer{font-size:12px;color:var(--text-muted);margin-top:16px;border-top:1px solid var(--border);padding-top:12px;}
+
+  @media(max-width:860px){
+    .app-shell{grid-template-columns:1fr;padding:14px 14px 40px;}
+    .app-side{position:static;padding:10px;}
+    .app-side .brand{display:none;}
+    .tab-row{display:flex;flex-wrap:wrap;gap:8px;}
+    .tab-btn{white-space:nowrap;width:auto;margin-bottom:0;flex:0 1 auto;}
+    .keybox{margin-top:12px;}
+    .calc-grid{grid-template-columns:1fr !important;}
+    .venc-form{grid-template-columns:1fr !important;}
+    .mini-form{grid-template-columns:1fr !important;}
+    .animal-form{grid-template-columns:1fr 1fr !important;}
+    .animal-meta{grid-template-columns:1fr 1fr !important;}
+    .app-main{padding:18px;}
+    .chat-log{height:320px;}
+  }
+</style>
+</head>
+<body>
+
+<style>
+.lab-login-overlay{position:fixed;inset:0;background:var(--bg,#fff);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
+.lab-login-card{background:var(--card,#fff);border:1px solid var(--border,#ddd);border-radius:20px;box-shadow:var(--shadow,0 10px 30px rgba(0,0,0,.08));padding:44px 36px;max-width:420px;width:100%;text-align:center}
+.lab-login-card img{width:56px;height:56px;border-radius:14px;margin-bottom:16px}
+.lab-login-card h1{font-family:var(--serif,'Playfair Display',serif);font-size:26px;margin:0 0 6px;color:var(--text)}
+.lab-login-card h1 em{font-style:italic;color:var(--accent)}
+.lab-login-card .lab-sub{font-size:14px;color:var(--text-muted);margin-bottom:26px;line-height:1.6}
+#google-signin-btn{display:flex;justify-content:center;margin-bottom:14px;min-height:44px}
+#lab-login-status{font-size:13px;color:var(--text-muted);min-height:18px;margin:0}
+.lab-login-note{font-size:12px;color:var(--text-muted);margin-top:18px;border-top:1px dashed var(--border);padding-top:14px;line-height:1.6}
+.lab-user-chip{position:fixed;bottom:14px;right:14px;z-index:60;background:var(--card,#fff);border:1px solid var(--border,#ddd);border-radius:999px;padding:7px 14px;font-size:12px;color:var(--text-muted);box-shadow:var(--shadow,0 6px 18px rgba(0,0,0,.1));display:none;align-items:center;gap:10px}
+.lab-user-chip b{color:var(--text);font-weight:600}
+.lab-user-chip button{background:none;border:none;color:#c0392b;cursor:pointer;font-size:12px;font-family:inherit}
+.lab-wa-btn{display:block;background:var(--brand);color:#fff;border-radius:12px;padding:13px 20px;font-weight:600;font-size:14px;text-decoration:none}
+</style>
+<div class="lab-login-overlay" id="labLoginOverlay">
+  <div class="lab-login-card" id="labLoginCard">
+    <img src="favicon-192.png" alt="">
+    <h1>Mi Prop<em>IA</em></h1>
+    <p class="lab-sub">Ingresá con Google para empezar — sin contraseñas, sin formularios.</p>
+    <div id="google-signin-btn"></div>
+    <p id="lab-login-status"></p>
+    <p class="lab-login-note">🎁 <b>7 días de prueba gratis</b> con acceso completo.<br>Tus datos quedan siempre en tu navegador.</p>
+  </div>
+  <div class="lab-login-card" id="labTrialCard" style="display:none;">
+    <img src="favicon-192.png" alt="">
+    <h1>Tu prueba terminó</h1>
+    <p class="lab-sub">Los 7 días de prueba gratuita llegaron a su fin. Para seguir usando la herramienta con soporte y acompañamiento, pasate al plan pago de MiPropIA.</p>
+    <a class="lab-wa-btn" href="https://wa.me/5493435344597?text=Hola,%20se%20me%20venci%C3%B3%20la%20prueba%20de%20MiPropIA%20y%20quiero%20contratar%20el%20plan%20pago">Contratar por WhatsApp →</a>
+    <p class="lab-login-note">¿Creés que es un error? Escribinos por el mismo WhatsApp y lo revisamos.</p>
+  </div>
+</div>
+<div class="lab-user-chip" id="labUserChip"><span id="labUserChipText"></span><button id="labLogoutBtn">Salir</button></div>
+
+
+<header class="site">
+  <nav class="nav">
+    <a href="index.html" class="brand"><img src="favicon-192.png" alt="MiPropIA" style="width:34px;height:34px;border-radius:9px;"> Mi Prop<span class="ia">IA</span></a>
+    <div class="navlinks">
+      <a href="index.html#features">Características</a>
+      <a href="guia-completa.html">📚 Guía Completa</a>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle">🌙</button>
+      <a href="index.html" class="btn btn-ghost">← Inicio</a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Abrir menú">☰</button>
+    </div>
+  </nav>
+</header>
+
+<div class="app-shell">
+  <aside class="app-side">
+    <div class="brand">Agente <span class="ia">IA</span></div>
+    <div class="tab-row">
+      <button class="tab-btn active" data-tab="chat">💬 Chat</button>
+      <button class="tab-btn" data-tab="doc">📄 Documentos</button>
+      <button class="tab-btn" data-tab="calc">🧮 Calculadora</button>
+      <button class="tab-btn" data-tab="roi">📈 Rentabilidad</button>
+      <button class="tab-btn" data-tab="venc">📅 Vencimientos</button>
+      <button class="tab-btn" data-tab="boletos">📝 Boletos</button>
+      <button class="tab-btn" data-tab="tasacion">🏷️ Tasación</button>
+      <button class="tab-btn" data-tab="verificacion">🔍 Verificación</button>
+      <button class="tab-btn" data-tab="cartera">🏠 Cartera</button>
+      <button class="tab-btn" data-tab="comisiones">💰 Comisiones</button>
+    </div>
+
+    <div class="keybox">
+      <label for="apiKeyInput">Tu API key de Anthropic</label>
+      <input id="apiKeyInput" type="password" placeholder="sk-ant-...">
+      <div class="key-status"><span class="dot-status" id="keyDot"></span><span id="keyStatusText">Sin configurar</span></div>
+      <select id="modelSelect" style="width:100%;margin-top:10px;padding:7px 8px;border-radius:8px;border:1px solid var(--border);font-size:16px;background:var(--bg);color:var(--text);">
+        <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 (rápido y económico)</option>
+        <option value="claude-sonnet-5">Claude Sonnet 5 (contratos complejos)</option>
+      </select>
+      <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">Tu key viaja directo a Anthropic desde tu navegador. Nunca pasa por servidores de LABStudio y se borra al cerrar la pestaña.</p>
+    </div>
+  </aside>
+
+  <main class="app-main">
+
+    <!-- CHAT -->
+    <section class="panel active" id="panel-chat">
+      <h2>💬 Chat inmobiliario IA</h2>
+      <p class="sub">Preguntá sobre sellado, comisiones, ley de alquileres o adjuntá un contrato para que lo analice en la conversación.</p>
+      <div class="chat-log" id="chatLog">
+        <div class="msg system">Cargá tu API key en el panel izquierdo para empezar a chatear.</div>
+      </div>
+      <div id="chatAttachPreview"></div>
+      <div class="chat-input-row">
+        <button class="icon-btn" id="chatAttachBtn" title="Adjuntar PDF o imagen">📎</button>
+        <input type="file" id="chatFileInput" accept=".pdf,.png,.jpg,.jpeg" style="display:none;">
+        <textarea id="chatInput" placeholder="Escribí tu consulta..."></textarea>
+        <button class="btn btn-primary icon-btn" id="chatSendBtn" title="Enviar">➤</button>
+      </div>
+    </section>
+
+    <!-- DOCUMENTOS -->
+    <section class="panel" id="panel-doc">
+      <h2>📄 Analizador de contratos</h2>
+      <p class="sub">Subí un PDF de contrato de locación o boleto de compraventa. La IA extrae partes, plazo, monto, índice de actualización y marca alertas normativas (DNU 70/2023).</p>
+      <div class="dropzone" id="docDropzone">
+        <div id="docDropzoneLabel">📎 Hacé click para subir un PDF, o arrastralo acá</div>
+        <input type="file" id="docFileInput" accept=".pdf" style="display:none;">
+      </div>
+      <div class="doc-result" id="docResult"></div>
+      <h3 style="margin-top:34px;font-size:16px;">Historial de análisis</h3>
+      <div id="docHistory"><p class="empty">Todavía no analizaste ningún documento.</p></div>
+    </section>
+
+    <!-- CALCULADORA -->
+    <section class="panel" id="panel-calc">
+      <h2>🧮 Sellado y comisión</h2>
+      <p class="sub">Valores de referencia para orientarte — confirmá siempre la alícuota vigente con el organismo de rentas de tu provincia antes de facturar.</p>
+      <div class="calc-grid">
+        <div>
+          <h3 style="font-size:15px;">Sellado</h3>
+          <div class="field">
+            <label>Provincia</label>
+            <select id="provinciaSelect"></select>
+          </div>
+          <div class="field">
+            <label>Tipo de operación</label>
+            <select id="tipoOperacion">
+              <option value="locacion">Locación (contrato de alquiler)</option>
+              <option value="compraventa">Compraventa (boleto)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Monto total del contrato ($)</label>
+            <input type="number" id="montoSellado" placeholder="Ej: 4200000">
+          </div>
+          <div class="result-box">
+            <div class="muted" style="font-size:12.5px;">Sellado estimado</div>
+            <div class="big" id="selladoResult">$0</div>
+            <div class="muted" style="font-size:12px;margin-top:4px;" id="selladoAlicuota"></div>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size:15px;">Comisión inmobiliaria</h3>
+          <div class="field">
+            <label>Tipo de operación</label>
+            <select id="tipoComision">
+              <option value="alquiler">Alquiler</option>
+              <option value="venta">Venta</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Monto de referencia ($)</label>
+            <input type="number" id="montoComision" placeholder="Ej: 350000">
+          </div>
+          <div class="field">
+            <label>% de comisión</label>
+            <input type="number" id="pctComision" value="4.15" step="0.05">
+          </div>
+          <div class="result-box">
+            <div class="muted" style="font-size:12.5px;">Comisión estimada (+ IVA 21% si corresponde)</div>
+            <div class="big" id="comisionResult">$0</div>
+            <div class="muted" style="font-size:12px;margin-top:4px;" id="comisionConIva"></div>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:15px;margin-top:28px;border-top:1px solid var(--border);padding-top:22px;">Impuesto Inmobiliario / ABL anual</h3>
+      <div class="calc-grid">
+        <div>
+          <div class="field">
+            <label>Provincia / Jurisdicción</label>
+            <select id="provinciaAbl"></select>
+          </div>
+          <div class="field">
+            <label>Valuación fiscal de la propiedad ($)</label>
+            <input type="number" id="valuacionAbl" placeholder="Ej: 18000000">
+          </div>
+        </div>
+        <div>
+          <div class="result-box">
+            <div class="muted" style="font-size:12.5px;">Impuesto inmobiliario estimado (anual)</div>
+            <div class="big" id="ablResult">$0</div>
+            <div class="muted" style="font-size:12px;margin-top:4px;" id="ablAlicuota"></div>
+            <div class="muted" style="font-size:12px;margin-top:2px;" id="ablCuota"></div>
+          </div>
+        </div>
+      </div>
+      <p class="disclaimer">⚠️ Los porcentajes de sellado, comisión e impuesto inmobiliario son valores de referencia (pueden variar por exenciones, montos mínimos no imponibles, categoría de la propiedad y actualizaciones). MiPropIA no reemplaza la verificación oficial ante ARBA / Rentas provincial o municipal correspondiente.</p>
+
+      <h3 style="font-size:15px;margin-top:28px;border-top:1px solid var(--border);padding-top:22px;">🏦 Crédito hipotecario — cuota UVA estimada</h3>
+      <div class="calc-grid">
+        <div>
+          <div class="field">
+            <label>Monto del crédito (UVA o $)</label>
+            <input type="number" id="creditoMonto" placeholder="Ej: 50000000">
+          </div>
+          <div class="field">
+            <label>Plazo (años)</label>
+            <input type="number" id="creditoPlazo" value="20">
+          </div>
+          <div class="field">
+            <label>Tasa nominal anual (TNA %)</label>
+            <input type="number" id="creditoTasa" value="8.5" step="0.1">
+          </div>
+          <div class="field">
+            <label>Valor UVA hoy ($, opcional)</label>
+            <input type="number" id="creditoValorUva" placeholder="Ej: 1450">
+          </div>
+        </div>
+        <div class="result-box">
+          <div class="muted" style="font-size:12.5px;">Cuota mensual estimada (sistema francés)</div>
+          <div class="big" id="creditoCuota">—</div>
+          <div class="row-mini"><span>En UVAs</span><span id="creditoCuotaUva">—</span></div>
+          <div class="row-mini"><span>Total de cuotas del crédito</span><span id="creditoPlazoMeses">—</span></div>
+          <div class="row-mini"><span>Total a pagar (sin ajuste por UVA)</span><span id="creditoTotalPagar">—</span></div>
+        </div>
+      </div>
+      <p class="disclaimer">⚠️ La cuota UVA se ajusta mensualmente por el coeficiente de actualización (CER/UVA) y el sueldo del comprador debería ajustarse por el mismo índice — esta es una estimación en el momento cero, no contempla la evolución del valor UVA a lo largo del crédito. Confirmá siempre la simulación oficial con el banco.</p>
+    </section>
+
+    <!-- RENTABILIDAD -->
+    <section class="panel" id="panel-roi">
+      <h2>📈 Rentabilidad de inversión</h2>
+      <p class="sub">Cap rate, cash flow y ROI para mostrarle al propietario o al inversor por qué esa propiedad conviene (o no). Lo mismo que ofrecen las plataformas internacionales, adaptado al peso argentino.</p>
+      <div class="calc-grid">
+        <div>
+          <h3 style="font-size:15px;">Datos de la propiedad</h3>
+          <div class="field">
+            <label>Precio de compra ($)</label>
+            <input type="number" id="roiPrecio" placeholder="Ej: 85000000">
+          </div>
+          <div class="field">
+            <label>Renta mensual esperada ($)</label>
+            <input type="number" id="roiRenta" placeholder="Ej: 450000">
+          </div>
+          <div class="field">
+            <label>Gastos mensuales — expensas, seguro, mantenimiento ($)</label>
+            <input type="number" id="roiGastos" placeholder="Ej: 60000">
+          </div>
+          <div class="field">
+            <label>Vacancia estimada (% del año)</label>
+            <input type="number" id="roiVacancia" value="8" step="1">
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size:15px;">Resultado</h3>
+          <div class="result-box">
+            <div class="muted" style="font-size:12.5px;">Cap rate (tasa de capitalización)</div>
+            <div class="big" id="roiCapRate">0%</div>
+            <div class="muted" style="font-size:12px;margin-top:4px;" id="roiCapRateNota">Ingreso operativo neto anual / precio de compra</div>
+          </div>
+          <div class="result-box" style="margin-top:14px;">
+            <div class="muted" style="font-size:12.5px;">Cash flow mensual neto</div>
+            <div class="big" id="roiCashflow">$0</div>
+            <div class="muted" style="font-size:12px;margin-top:4px;" id="roiCashflowAnual"></div>
+          </div>
+          <div class="result-box" style="margin-top:14px;">
+            <div class="muted" style="font-size:12.5px;">Rentabilidad bruta anual</div>
+            <div class="big" id="roiBruta">0%</div>
+            <div class="muted" style="font-size:12px;margin-top:4px;">Renta anual bruta / precio de compra — sin descontar gastos ni vacancia</div>
+          </div>
+        </div>
+      </div>
+      <p class="disclaimer">⚠️ Estimación orientativa para conversar con el propietario o el inversor — no contempla impuestos (Ganancias, Bienes Personales), costos de escrituración ni variación cambiaria. Confirmá siempre los números finales con un contador.</p>
+    </section>
+
+    <!-- VENCIMIENTOS -->
+    <section class="panel" id="panel-venc">
+      <h2>📅 Vencimientos con semáforo</h2>
+      <p class="sub">Cargá tus contratos y te avisamos con colores qué está por vencer.</p>
+      <div class="venc-form">
+        <div class="field" style="margin-bottom:0;"><label>Cliente / Propiedad</label><input type="text" id="vencCliente" placeholder="Ej: Depto Centro - Familia Ruiz"></div>
+        <div class="field" style="margin-bottom:0;"><label>Fecha de inicio</label><input type="date" id="vencInicio"></div>
+        <div class="field" style="margin-bottom:0;"><label>Plazo (meses)</label><input type="number" id="vencPlazo" value="24"></div>
+        <button class="btn btn-primary" id="vencAddBtn" style="height:42px;">Agregar</button>
+      </div>
+      <table class="venc" id="vencTable">
+        <thead><tr><th></th><th>Cliente / Propiedad</th><th>Inicio</th><th>Vence</th><th>Días</th><th></th></tr></thead>
+        <tbody id="vencTbody"></tbody>
+      </table>
+      <div id="vencEmpty" class="empty" style="display:none;">Todavía no cargaste ningún contrato.</div>
+    </section>
+
+    <!-- BOLETOS -->
+    <section class="panel" id="panel-boletos">
+      <h2>📝 Generador de boletos de compraventa</h2>
+      <p class="sub">Completá los datos y generá un boleto de compraventa listo para revisar con el escribano — es un modelo orientativo, no reemplaza el asesoramiento legal.</p>
+      <div class="calc-grid">
+        <div>
+          <h3 style="font-size:15px;">Partes</h3>
+          <div class="field"><label>Vendedor (nombre completo)</label><input type="text" id="bolVendedorNombre" placeholder="Ej: Juan Pérez"></div>
+          <div class="field"><label>DNI vendedor</label><input type="text" id="bolVendedorDni" placeholder="Ej: 20.123.456"></div>
+          <div class="field"><label>Comprador (nombre completo)</label><input type="text" id="bolCompradorNombre" placeholder="Ej: María Gómez"></div>
+          <div class="field"><label>DNI comprador</label><input type="text" id="bolCompradorDni" placeholder="Ej: 30.456.789"></div>
+        </div>
+        <div>
+          <h3 style="font-size:15px;">Inmueble y operación</h3>
+          <div class="field"><label>Dirección del inmueble</label><input type="text" id="bolDireccion" placeholder="Ej: Av. Ramírez 1234, Paraná"></div>
+          <div class="field"><label>Nomenclatura catastral / partida</label><input type="text" id="bolPartida" placeholder="Ej: Partida 123456"></div>
+          <div class="field"><label>Precio total</label><input type="text" id="bolPrecio" placeholder="Ej: USD 85.000"></div>
+          <div class="field"><label>Seña / anticipo</label><input type="text" id="bolSenia" placeholder="Ej: USD 10.000 al firmar"></div>
+        </div>
+      </div>
+      <div class="calc-grid">
+        <div class="field"><label>Saldo y forma de pago</label><textarea id="bolFormaPago" placeholder="Ej: Saldo de USD 75.000 al momento de la escritura, dentro de los 60 días..."></textarea></div>
+        <div class="field"><label>Plazo para escriturar</label><input type="text" id="bolPlazo" placeholder="Ej: 60 días corridos desde la firma"></div>
+      </div>
+      <div class="field"><label>Observaciones / cláusulas particulares</label><textarea id="bolObservaciones" placeholder="Ej: libre de ocupantes, gastos de escritura a cargo del comprador..."></textarea></div>
+      <div class="field"><label>Ciudad y fecha</label><input type="text" id="bolFecha" placeholder="Ej: Paraná, 16 de julio de 2026"></div>
+      <button class="btn btn-primary" id="bolGenerarBtn">Generar boleto</button>
+
+      <div id="bolPreviewBox" style="display:none;margin-top:24px;">
+        <div class="doc-card" id="bolPreviewContent" style="white-space:pre-wrap;font-family:'Inter',sans-serif;line-height:1.7;"></div>
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+          <button class="btn btn-primary" id="bolDescargarBtn">⬇️ Descargar PDF</button>
+          <button class="btn btn-ghost" id="bolCopiarBtn">📋 Copiar texto</button>
+        </div>
+      </div>
+      <p class="disclaimer">⚠️ Este boleto es un modelo orientativo generado automáticamente — siempre debe ser revisado y ajustado por un escribano o abogado antes de firmarse. MiPropIA no se responsabiliza por cláusulas legales específicas de cada operación.</p>
+    </section>
+
+    <!-- TASACIÓN COMPARABLE -->
+    <section class="panel" id="panel-tasacion">
+      <h2>🏷️ Tasación comparable</h2>
+      <p class="sub">Cargá comparables de venta reciente en la zona y estimá un rango de valor por metro cuadrado — método de comparables simple, no reemplaza una tasación profesional matriculada.</p>
+
+      <h3 style="font-size:15px;">Propiedad a tasar</h3>
+      <div class="calc-grid">
+        <div class="field"><label>Superficie (m²)</label><input type="number" id="tasM2Propia" placeholder="Ej: 75"></div>
+        <div class="field"><label>Zona / barrio</label><input type="text" id="tasZona" placeholder="Ej: Centro, Paraná"></div>
+      </div>
+
+      <h3 style="font-size:15px;margin-top:24px;">Comparables de venta reciente</h3>
+      <div class="mini-form" style="grid-template-columns:1.3fr .8fr 1fr auto;">
+        <div class="field" style="margin-bottom:0;"><label>Referencia</label><input type="text" id="tasCompRef" placeholder="Ej: Depto 2 amb, mismo barrio"></div>
+        <div class="field" style="margin-bottom:0;"><label>M²</label><input type="number" id="tasCompM2" placeholder="Ej: 60"></div>
+        <div class="field" style="margin-bottom:0;"><label>Precio de venta</label><input type="number" id="tasCompPrecio" placeholder="Ej: 60000"></div>
+        <button class="btn btn-primary" id="tasCompAddBtn" style="height:40px;">Agregar</button>
+      </div>
+      <table class="mini" id="tasCompTable">
+        <thead><tr><th>Referencia</th><th>M²</th><th>Precio</th><th>$/m²</th><th></th></tr></thead>
+        <tbody id="tasCompTbody"></tbody>
+      </table>
+      <div id="tasCompEmpty" class="empty" style="display:none;padding:16px 0;">Todavía no cargaste comparables.</div>
+
+      <div class="result-box" style="margin-top:20px;">
+        <div class="muted" style="font-size:12.5px;">Valor estimado por m² (promedio de comparables)</div>
+        <div class="big" id="tasValorM2">—</div>
+        <div class="muted" style="font-size:12px;margin-top:4px;" id="tasRangoM2"></div>
+      </div>
+      <div class="result-box" style="margin-top:14px;">
+        <div class="muted" style="font-size:12.5px;">Valor estimado de tu propiedad</div>
+        <div class="big" id="tasValorTotal">—</div>
+        <div class="muted" style="font-size:12px;margin-top:4px;" id="tasRangoTotal"></div>
+      </div>
+      <p class="disclaimer">⚠️ Estimación orientativa por método de comparables simples — no contempla estado de conservación, piso, orientación ni antigüedad. Para una tasación con validez profesional, consultá a un martillero o tasador matriculado.</p>
+    </section>
+
+    <!-- VERIFICACIÓN DOCUMENTAL -->
+    <section class="panel" id="panel-verificacion">
+      <h2>🔍 Verificación documental</h2>
+      <p class="sub">Checklist de la documentación habitual para una compraventa, y análisis con IA de un documento puntual (informe de dominio, libre deuda, etc.) para detectar datos faltantes o inconsistencias.</p>
+
+      <h3 style="font-size:15px;">Checklist de la operación</h3>
+      <div id="verifChecklist"></div>
+
+      <h3 style="font-size:15px;margin-top:26px;">Analizar un documento con IA</h3>
+      <p class="sub" style="margin-bottom:10px;">Subí el PDF de un informe de dominio, libre deuda, certificado de inhibiciones u otro documento — la IA lo lee y te resume los datos clave y posibles alertas.</p>
+      <div class="dropzone" id="verifDropzone">
+        <div>📎 Hacé click para subir un PDF, o arrastralo acá</div>
+        <input type="file" id="verifFileInput" accept=".pdf" style="display:none;">
+      </div>
+      <div id="verifResult"></div>
+      <p class="disclaimer">⚠️ MiPropIA no reemplaza la verificación registral oficial (Registro de la Propiedad) ni el asesoramiento de un escribano — es una herramienta de apoyo para agilizar la primera lectura.</p>
+
+      <h3 style="font-size:15px;margin-top:28px;border-top:1px solid var(--border);padding-top:22px;">Checklist para Alquiler (locación)</h3>
+      <p class="sub" style="margin-bottom:10px;">La contraparte del checklist de compraventa, pensada para una operación de alquiler.</p>
+      <div id="verifChecklistAlquiler"></div>
+    </section>
+
+    <!-- CARTERA DE PROPIEDADES -->
+    <section class="panel" id="panel-cartera">
+      <div id="carteraListView">
+        <h2>🏠 Cartera de propiedades</h2>
+        <p class="sub">Tus propiedades en gestión: disponibles, reservadas y vendidas, con los datos clave a mano.</p>
+        <div class="animal-form">
+          <div class="field" style="margin-bottom:0;"><label>Dirección</label><input type="text" id="propDireccion" placeholder="Ej: Av. Rivadavia 4500, CABA"></div>
+          <div class="field" style="margin-bottom:0;"><label>Tipo</label>
+            <select id="propTipo">
+              <option>Departamento</option><option>Casa</option><option>PH</option><option>Local comercial</option><option>Oficina</option><option>Lote / Terreno</option><option>Otro</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:0;"><label>m²</label><input type="number" id="propM2" placeholder="Ej: 65"></div>
+          <div class="field" style="margin-bottom:0;"><label>Ambientes</label><input type="number" id="propAmbientes" placeholder="Ej: 3"></div>
+          <div class="field" style="margin-bottom:0;"><label>Precio (USD o $)</label><input type="text" id="propPrecio" placeholder="Ej: USD 120.000"></div>
+          <div class="field" style="margin-bottom:0;"><label>Estado</label>
+            <select id="propEstado"><option value="disponible">Disponible</option><option value="reservada">Reservada</option><option value="vendida">Vendida</option></select>
+          </div>
+          <div class="field" style="margin-bottom:0;"><label>Cliente / Propietario</label><input type="text" id="propCliente" placeholder="Nombre"></div>
+          <div class="field" style="margin-bottom:0;display:flex;align-items:flex-end;"><button class="btn btn-brand" id="btnAddProp" style="width:100%;">+ Agregar propiedad</button></div>
+        </div>
+        <table class="animales">
+          <thead><tr><th>Dirección</th><th>Tipo</th><th>m²</th><th>Precio</th><th>Estado</th><th>Cliente</th><th></th></tr></thead>
+          <tbody id="propTableBody"></tbody>
+        </table>
+        <div id="propEmpty" class="empty" style="display:none;">Todavía no cargaste ninguna propiedad.</div>
+      </div>
+
+      <div id="carteraDetailView" style="display:none;">
+        <a href="#" id="propBackLink" style="font-size:13.5px;color:var(--text-muted);text-decoration:none;">← Volver a la cartera</a>
+        <div class="animal-card">
+          <div class="top">
+            <div><h3 id="propDetDireccion">—</h3><span class="estado-pill" id="propDetEstado">—</span></div>
+            <button class="btn btn-ghost" id="btnDeleteProp" style="border-color:#c33;color:#c33;font-size:12.5px;padding:8px 12px;">🗑️ Eliminar</button>
+          </div>
+          <div class="animal-meta">
+            <div><div class="lbl">Tipo</div><div class="v" id="propDetTipo">—</div></div>
+            <div><div class="lbl">m²</div><div class="v" id="propDetM2">—</div></div>
+            <div><div class="lbl">Ambientes</div><div class="v" id="propDetAmbientes">—</div></div>
+            <div><div class="lbl">Precio</div><div class="v" id="propDetPrecio">—</div></div>
+            <div><div class="lbl">Cliente / Propietario</div><div class="v" id="propDetCliente">—</div></div>
+            <div><div class="lbl">Cambiar estado</div><div class="v"><select id="propDetEstadoSelect" style="font-size:13px;padding:4px 6px;border-radius:6px;border:1px solid var(--border);"><option value="disponible">Disponible</option><option value="reservada">Reservada</option><option value="vendida">Vendida</option></select></div></div>
+          </div>
+
+          <div class="subtab-row">
+            <button class="subtab-btn active" data-psub="aviso">📢 Aviso para portales</button>
+            <button class="subtab-btn" data-psub="visitas">📅 Visitas</button>
+          </div>
+
+          <div class="subpanel active" id="sub-prop-aviso">
+            <p class="sub" style="margin-bottom:10px;">Generá el texto listo para pegar en Zonaprop, Argenprop u otro portal, a partir de los datos ya cargados.</p>
+            <div class="field"><label>Detalles adicionales (opcional: amenities, orientación, expensas, etc.)</label><textarea id="avisoExtra" placeholder="Ej: balcón, cochera, luminoso, expensas $45.000"></textarea></div>
+            <button class="btn btn-brand" id="btnGenerarAviso">✨ Generar aviso</button>
+            <div class="result-box" style="margin-top:16px;display:none;" id="avisoResultBox">
+              <div class="muted" style="font-size:12.5px;margin-bottom:8px;">Texto generado — copialo y pegalo en el portal</div>
+              <textarea id="avisoTexto" style="width:100%;min-height:180px;padding:12px;border-radius:9px;border:1px solid var(--border);font-family:inherit;font-size:14px;background:var(--bg);color:var(--text);"></textarea>
+              <button class="btn btn-ghost" id="btnCopiarAviso" style="margin-top:10px;font-size:12.5px;padding:8px 14px;">📋 Copiar texto</button>
+            </div>
+          </div>
+
+          <div class="subpanel" id="sub-prop-visitas">
+            <div class="mini-form">
+              <div class="field" style="margin-bottom:0;"><label>Fecha</label><input type="date" id="visitaFecha"></div>
+              <div class="field" style="margin-bottom:0;"><label>Hora</label><input type="time" id="visitaHora"></div>
+              <div class="field" style="margin-bottom:0;"><label>Cliente</label><input type="text" id="visitaCliente" placeholder="Nombre"></div>
+              <button class="btn btn-brand" id="btnAddVisita" style="height:44px;">+</button>
+            </div>
+            <table class="mini">
+              <thead><tr><th>Fecha</th><th>Hora</th><th>Cliente</th><th>Estado</th><th></th></tr></thead>
+              <tbody id="visitasTableBody"></tbody>
+            </table>
+            <div id="visitasEmpty" class="empty" style="display:none;">No hay visitas agendadas para esta propiedad.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMISIONES -->
+    <section class="panel" id="panel-comisiones">
+      <h2>💰 Comisiones ganadas</h2>
+      <p class="sub">Cada operación cerrada con su comisión — tu propio "cuánto facturé este mes" sin abrir otra planilla.</p>
+      <div class="mini-form" style="grid-template-columns:1.3fr 1fr .9fr .8fr .8fr auto;">
+        <div class="field" style="margin-bottom:0;"><label>Fecha</label><input type="date" id="comFecha"></div>
+        <div class="field" style="margin-bottom:0;"><label>Propiedad / Cliente</label><input type="text" id="comPropiedad" placeholder="Ej: Av. Rivadavia 4500"></div>
+        <div class="field" style="margin-bottom:0;"><label>Operación</label><select id="comTipo"><option value="venta">Venta</option><option value="alquiler">Alquiler</option></select></div>
+        <div class="field" style="margin-bottom:0;"><label>Monto operación</label><input type="number" id="comMonto" placeholder="Ej: 120000"></div>
+        <div class="field" style="margin-bottom:0;"><label>% comisión</label><input type="number" id="comPorcentaje" value="3" step="0.5"></div>
+        <button class="btn btn-brand" id="btnAddComision" style="height:44px;">+</button>
+      </div>
+      <table class="mini">
+        <thead><tr><th>Fecha</th><th>Propiedad / Cliente</th><th>Operación</th><th>Monto</th><th>%</th><th>Comisión</th><th></th></tr></thead>
+        <tbody id="comisionesTableBody"></tbody>
+      </table>
+      <div id="comisionesEmpty" class="empty" style="display:none;">Todavía no cargaste ninguna comisión.</div>
+      <div class="result-box" style="margin-top:18px;max-width:340px;">
+        <div class="muted" style="font-size:12.5px;">Total facturado en comisiones</div>
+        <div class="big" id="comisionesTotal">$0</div>
+        <div class="row-mini"><span>Este mes</span><span id="comisionesTotalMes">$0</span></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+/* ---------- Theme ---------- */
+const toggle = document.getElementById('themeToggle');
+const root = document.documentElement;
+function applyTheme(t){ root.setAttribute('data-theme', t); toggle.textContent = t === 'dark' ? '☀️' : '🌙'; }
+applyTheme(localStorage.getItem('mipropia_theme') || 'light');
+toggle.addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  applyTheme(next); localStorage.setItem('mipropia_theme', next);
+});
+
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const navlinksEl = document.querySelector('.navlinks');
+if (hamburgerBtn && navlinksEl) {
+  hamburgerBtn.addEventListener('click', () => {
+    const isOpen = navlinksEl.classList.toggle('open');
+    hamburgerBtn.textContent = isOpen ? '✕' : '☰';
+  });
+  navlinksEl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    navlinksEl.classList.remove('open');
+    hamburgerBtn.textContent = '☰';
+  }));
+}
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---------- API key (sessionStorage only — se borra al cerrar) ---------- */
+const apiKeyInput = document.getElementById('apiKeyInput');
+const keyDot = document.getElementById('keyDot');
+const keyStatusText = document.getElementById('keyStatusText');
+const modelSelect = document.getElementById('modelSelect');
+
+function getApiKey(){ return sessionStorage.getItem('mipropia_api_key') || ''; }
+function setKeyStatus(){
+  const k = getApiKey();
+  if (k && k.startsWith('sk-ant-')) { keyDot.classList.add('ok'); keyStatusText.textContent = 'Conectado'; }
+  else { keyDot.classList.remove('ok'); keyStatusText.textContent = 'Sin configurar'; }
+}
+apiKeyInput.value = getApiKey();
+setKeyStatus();
+apiKeyInput.addEventListener('input', () => {
+  sessionStorage.setItem('mipropia_api_key', apiKeyInput.value.trim());
+  setKeyStatus();
+});
+
+const SYSTEM_PROMPT_CHAT = `Sos el asistente inmobiliario de MiPropIA, para agentes y corredores inmobiliarios en Argentina. Ayudás con: sellado provincial, comisiones, ley de alquileres (Código Civil y Comercial tras el DNU 70/2023), índices de actualización (ICL), boletos de compraventa, contratos de locación y análisis de rentabilidad de inversión (cap rate, cash flow). Si te adjuntan un documento, analizalo y respondé de forma clara y breve, en español rioplatense.
+
+Si el agente te describe un lead o comprador (presupuesto, zona buscada, tipo de propiedad, cantidad de ambientes, uso — inversión o vivienda), ayudalo a estructurar el perfil de búsqueda en un resumen ordenado (presupuesto máximo, zona, tipo, prioridades) que el agente pueda usar para matchear contra su cartera de propiedades activas o para calificar qué tan avanzado está ese lead en su decisión de compra/alquiler — MiPropIA hoy no tiene acceso directo a la cartera de propiedades del agente, así que aclará que el agente debe cruzar ese perfil con sus listados.
+
+Nunca dés asesoramiento legal o impositivo definitivo ni inventes montos o normativa que no conocés con certeza — siempre aclará cuándo conviene que un profesional matriculado lo confirme.`;
+
+async function callClaude(messages, systemPrompt, maxTokens = 1024){
+  const key = getApiKey();
+  if (!key) throw new Error('NO_KEY');
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'x-api-key': key,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: modelSelect.value,
+      max_tokens: maxTokens,
+      system: systemPrompt,
+      messages
+    })
+  });
+  if (!res.ok) {
+    const errBody = await res.text();
+    throw new Error('API_ERROR: ' + res.status + ' ' + errBody);
+  }
+  const data = await res.json();
+  return (data.content || []).map(c => c.text || '').join('\n');
+}
+
+/* ---------- Chat ---------- */
+const chatLog = document.getElementById('chatLog');
+const chatInput = document.getElementById('chatInput');
+const chatSendBtn = document.getElementById('chatSendBtn');
+const chatAttachBtn = document.getElementById('chatAttachBtn');
+const chatFileInput = document.getElementById('chatFileInput');
+const chatAttachPreview = document.getElementById('chatAttachPreview');
+let chatHistory = [];
+let pendingAttachment = null;
+
+function addMsg(role, text){
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  div.textContent = text;
+  chatLog.appendChild(div);
+  chatLog.scrollTop = chatLog.scrollHeight;
+  return div;
+}
+
+chatAttachBtn.addEventListener('click', () => chatFileInput.click());
+chatFileInput.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  pendingAttachment = file;
+  chatAttachPreview.innerHTML = `<span class="attach-chip">📎 ${file.name} <button id="removeAttach">✕</button></span>`;
+  document.getElementById('removeAttach').addEventListener('click', () => {
+    pendingAttachment = null; chatAttachPreview.innerHTML = ''; chatFileInput.value = '';
+  });
+});
+
+async function fileToBase64(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function extractPdfText(file){
+  const buf = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+  let text = '';
+  for (let i = 1; i <= pdf.numPages; i++){
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    text += content.items.map(it => it.str).join(' ') + '\n';
+  }
+  return text.trim();
+}
+
+chatSendBtn.addEventListener('click', sendChat);
+chatInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendChat(); }
+});
+
+async function sendChat(){
+  const key = getApiKey();
+  if (!key){ addMsg('system', 'Primero cargá tu API key de Anthropic en el panel izquierdo.'); return; }
+  const text = chatInput.value.trim();
+  if (!text && !pendingAttachment) return;
+
+  let userDisplay = text;
+  let userContent = [];
+
+  if (pendingAttachment){
+    userDisplay += (text ? '\n' : '') + `📎 ${pendingAttachment.name}`;
+    try {
+      if (pendingAttachment.type === 'application/pdf'){
+        const pdfText = await extractPdfText(pendingAttachment);
+        userContent.push({ type: 'text', text: `${text || 'Analizá este documento:'}\n\n--- CONTENIDO DEL PDF ---\n${pdfText.slice(0, 15000)}` });
+      } else {
+        const b64 = await fileToBase64(pendingAttachment);
+        userContent.push({ type: 'image', source: { type: 'base64', media_type: pendingAttachment.type, data: b64 } });
+        userContent.push({ type: 'text', text: text || 'Analizá esta imagen.' });
+      }
+    } catch(err){
+      addMsg('system', 'No se pudo leer el archivo adjunto: ' + err.message);
+      return;
+    }
+  } else {
+    userContent = text;
+  }
+
+  addMsg('user', userDisplay);
+  chatInput.value = '';
+  pendingAttachment = null; chatAttachPreview.innerHTML = ''; chatFileInput.value = '';
+
+  chatHistory.push({ role: 'user', content: userContent });
+  const loadingDiv = addMsg('bot', ''); loadingDiv.innerHTML = '<span class="loading"><span></span><span></span><span></span></span>';
+
+  try {
+    const reply = await callClaude(chatHistory, SYSTEM_PROMPT_CHAT, 1200);
+    loadingDiv.textContent = reply;
+    chatHistory.push({ role: 'assistant', content: reply });
+  } catch(err){
+    loadingDiv.remove();
+    if (String(err.message).includes('NO_KEY')) addMsg('system', 'Cargá tu API key para continuar.');
+    else addMsg('system', '⚠️ Error al consultar la IA: ' + err.message.slice(0,200));
+  }
+}
+
+/* ---------- Documentos (analizador de contratos) ---------- */
+const docDropzone = document.getElementById('docDropzone');
+const docFileInput = document.getElementById('docFileInput');
+const docResult = document.getElementById('docResult');
+const docHistoryEl = document.getElementById('docHistory');
+
+docDropzone.addEventListener('click', () => docFileInput.click());
+docDropzone.addEventListener('dragover', (e) => { e.preventDefault(); docDropzone.style.borderColor = 'var(--brand-light)'; });
+docDropzone.addEventListener('dragleave', () => { docDropzone.style.borderColor = 'var(--border)'; });
+docDropzone.addEventListener('drop', (e) => {
+  e.preventDefault(); docDropzone.style.borderColor = 'var(--border)';
+  if (e.dataTransfer.files[0]) analyzeDoc(e.dataTransfer.files[0]);
+});
+docFileInput.addEventListener('change', (e) => { if (e.target.files[0]) analyzeDoc(e.target.files[0]); });
+
+const SYSTEM_PROMPT_DOC = `Sos un analista documental para una inmobiliaria argentina. Vas a recibir el texto de un contrato de locación o boleto de compraventa. Respondé EXCLUSIVAMENTE con un objeto JSON válido (sin texto adicional, sin markdown, sin backticks) con esta forma exacta:
+{"tipo_documento":"contrato_locacion|boleto_compraventa|otro","resumen":"...","partes":"...","plazo":"...","monto":"...","indice_actualizacion":"...","alertas_normativas":["..."]}
+Marcá en alertas_normativas cualquier cláusula que contradiga el Código Civil y Comercial / DNU 70-2023, datos faltantes clave, o puntos que un profesional debería revisar antes de firmar. Si no hay alertas, devolvé un array vacío.`;
+
+function loadDocHistory(){
+  return JSON.parse(localStorage.getItem('mipropia_contratos') || '[]');
+}
+function saveDocHistory(list){
+  localStorage.setItem('mipropia_contratos', JSON.stringify(list));
+}
+function renderDocHistory(){
+  const list = loadDocHistory();
+  if (!list.length){ docHistoryEl.innerHTML = '<p class="empty">Todavía no analizaste ningún documento.</p>'; return; }
+  docHistoryEl.innerHTML = list.slice().reverse().map((item, idxRev) => {
+    const idx = list.length - 1 - idxRev;
+    return `<div class="history-item"><span>📄 ${item.nombreArchivo} — ${item.data.tipo_documento || 'documento'} <span class="muted">(${item.fecha})</span></span><button data-idx="${idx}" class="delDocBtn">Eliminar</button></div>`;
+  }).join('');
+  docHistoryEl.querySelectorAll('.delDocBtn').forEach(b => b.addEventListener('click', () => {
+    const list2 = loadDocHistory(); list2.splice(parseInt(b.dataset.idx), 1); saveDocHistory(list2); renderDocHistory();
+  }));
+}
+renderDocHistory();
+
+function renderDocCard(data, nombreArchivo){
+  const alerts = (data.alertas_normativas || []).map(a => `<li>${a}</li>`).join('');
+  docResult.innerHTML = `
+    <div class="doc-card"><h4>Tipo de documento</h4><div class="val">${data.tipo_documento || '—'}</div></div>
+    <div class="doc-card"><h4>Resumen</h4><div class="val">${data.resumen || '—'}</div></div>
+    <div class="calc-grid">
+      <div class="doc-card"><h4>Partes</h4><div class="val">${data.partes || '—'}</div></div>
+      <div class="doc-card"><h4>Plazo</h4><div class="val">${data.plazo || '—'}</div></div>
+      <div class="doc-card"><h4>Monto</h4><div class="val">${data.monto || '—'}</div></div>
+      <div class="doc-card"><h4>Índice de actualización</h4><div class="val">${data.indice_actualizacion || '—'}</div></div>
+    </div>
+    <div class="doc-card"><h4>⚠️ Alertas normativas</h4>${alerts ? `<ul class="alert-list">${alerts}</ul>` : '<p class="val muted">Sin alertas detectadas.</p>'}</div>
+    <p class="disclaimer">MiPropIA es una herramienta de apoyo — la validación legal final de "${nombreArchivo}" siempre es de un profesional matriculado.</p>
+  `;
+}
+
+async function analyzeDoc(file){
+  const key = getApiKey();
+  if (!key){ docResult.innerHTML = '<p class="empty">Cargá tu API key de Anthropic en el panel izquierdo para analizar documentos.</p>'; return; }
+  if (file.type !== 'application/pdf'){ docResult.innerHTML = '<p class="empty">Por ahora solo se admiten archivos PDF.</p>'; return; }
+
+  docResult.innerHTML = '<div class="loading" style="color:var(--brand-light);font-size:20px;"><span></span><span></span><span></span></div>';
+  try {
+    const text = await extractPdfText(file);
+    const raw = await callClaude(
+      [{ role: 'user', content: `Documento a analizar:\n\n${text.slice(0, 18000)}` }],
+      SYSTEM_PROMPT_DOC,
+      1200
+    );
+    let data;
+    try { data = JSON.parse(raw.trim().replace(/^```json/, '').replace(/```$/, '').trim()); }
+    catch(parseErr){ throw new Error('La IA no devolvió un JSON válido. Probá de nuevo.'); }
+
+    renderDocCard(data, file.name);
+    const list = loadDocHistory();
+    list.push({ nombreArchivo: file.name, data, fecha: new Date().toLocaleDateString('es-AR') });
+    saveDocHistory(list);
+    renderDocHistory();
+  } catch(err){
+    docResult.innerHTML = `<p class="empty">⚠️ ${err.message.slice(0,220)}</p>`;
+  }
+}
+
+/* ---------- Calculadora ---------- */
+const ALICUOTAS_SELLADO = {
+  'CABA': 0.0090, 'Buenos Aires': 0.0150, 'Catamarca': 0.0100, 'Chaco': 0.0125,
+  'Chubut': 0.0100, 'Córdoba': 0.0125, 'Corrientes': 0.0100, 'Entre Ríos': 0.0120,
+  'Formosa': 0.0100, 'Jujuy': 0.0100, 'La Pampa': 0.0100, 'La Rioja': 0.0100,
+  'Mendoza': 0.0150, 'Misiones': 0.0100, 'Neuquén': 0.0125, 'Río Negro': 0.0100,
+  'Salta': 0.0100, 'San Juan': 0.0100, 'San Luis': 0.0100, 'Santa Cruz': 0.0100,
+  'Santa Fe': 0.0120, 'Santiago del Estero': 0.0100, 'Tierra del Fuego': 0.0100, 'Tucumán': 0.0100
+};
+const provinciaSelect = document.getElementById('provinciaSelect');
+Object.keys(ALICUOTAS_SELLADO).forEach(p => {
+  const opt = document.createElement('option'); opt.value = p; opt.textContent = p; provinciaSelect.appendChild(opt);
+});
+
+function fmtMoney(n){ return '$' + n.toLocaleString('es-AR', { maximumFractionDigits: 0 }); }
+
+function calcSellado(){
+  const prov = provinciaSelect.value;
+  const monto = parseFloat(document.getElementById('montoSellado').value) || 0;
+  const rate = ALICUOTAS_SELLADO[prov] || 0.01;
+  document.getElementById('selladoResult').textContent = fmtMoney(monto * rate);
+  document.getElementById('selladoAlicuota').textContent = `Alícuota de referencia ${prov}: ${(rate*100).toFixed(2)}%`;
+}
+['provinciaSelect','tipoOperacion','montoSellado'].forEach(id => document.getElementById(id).addEventListener('input', calcSellado));
+calcSellado();
+
+function calcComision(){
+  const monto = parseFloat(document.getElementById('montoComision').value) || 0;
+  const pct = parseFloat(document.getElementById('pctComision').value) || 0;
+  const base = monto * (pct/100);
+  document.getElementById('comisionResult').textContent = fmtMoney(base);
+  document.getElementById('comisionConIva').textContent = `Con IVA (21%): ${fmtMoney(base*1.21)}`;
+}
+['tipoComision','montoComision','pctComision'].forEach(id => document.getElementById(id).addEventListener('input', calcComision));
+calcComision();
+
+/* ---------- Impuesto Inmobiliario / ABL (estimado, sobre valuación fiscal) ---------- */
+const ALICUOTAS_ABL = {
+  'CABA': 0.0060, 'Buenos Aires': 0.0100, 'Catamarca': 0.0080, 'Chaco': 0.0090,
+  'Chubut': 0.0080, 'Córdoba': 0.0090, 'Corrientes': 0.0080, 'Entre Ríos': 0.0090,
+  'Formosa': 0.0080, 'Jujuy': 0.0080, 'La Pampa': 0.0080, 'La Rioja': 0.0080,
+  'Mendoza': 0.0090, 'Misiones': 0.0080, 'Neuquén': 0.0090, 'Río Negro': 0.0080,
+  'Salta': 0.0080, 'San Juan': 0.0080, 'San Luis': 0.0080, 'Santa Cruz': 0.0080,
+  'Santa Fe': 0.0090, 'Santiago del Estero': 0.0080, 'Tierra del Fuego': 0.0080, 'Tucumán': 0.0080
+};
+const provinciaAbl = document.getElementById('provinciaAbl');
+Object.keys(ALICUOTAS_ABL).forEach(p => {
+  const opt = document.createElement('option'); opt.value = p; opt.textContent = p; provinciaAbl.appendChild(opt);
+});
+
+function calcAbl(){
+  const prov = provinciaAbl.value;
+  const valuacion = parseFloat(document.getElementById('valuacionAbl').value) || 0;
+  const rate = ALICUOTAS_ABL[prov] || 0.008;
+  const anual = valuacion * rate;
+  document.getElementById('ablResult').textContent = fmtMoney(anual);
+  document.getElementById('ablAlicuota').textContent = `Alícuota de referencia ${prov}: ${(rate*100).toFixed(2)}% sobre valuación fiscal`;
+  document.getElementById('ablCuota').textContent = `≈ ${fmtMoney(anual/6)} por cuota bimestral (esquema habitual de 6 cuotas/año)`;
+}
+['provinciaAbl','valuacionAbl'].forEach(id => document.getElementById(id).addEventListener('input', calcAbl));
+calcAbl();
+
+/* ---------- Rentabilidad (ROI / cap rate) ---------- */
+function calcRoi(){
+  const precio = parseFloat(document.getElementById('roiPrecio').value) || 0;
+  const renta = parseFloat(document.getElementById('roiRenta').value) || 0;
+  const gastos = parseFloat(document.getElementById('roiGastos').value) || 0;
+  const vacanciaPct = parseFloat(document.getElementById('roiVacancia').value) || 0;
+
+  const rentaAnualBruta = renta * 12;
+  const perdidaVacancia = rentaAnualBruta * (vacanciaPct/100);
+  const ingresoOperativoNeto = rentaAnualBruta - perdidaVacancia - (gastos * 12);
+  const capRate = precio > 0 ? (ingresoOperativoNeto / precio) * 100 : 0;
+  const cashflowMensual = (renta * (1 - vacanciaPct/100)) - gastos;
+  const rentabilidadBruta = precio > 0 ? (rentaAnualBruta / precio) * 100 : 0;
+
+  document.getElementById('roiCapRate').textContent = capRate.toFixed(2) + '%';
+  document.getElementById('roiCashflow').textContent = fmtMoney(cashflowMensual);
+  document.getElementById('roiCashflowAnual').textContent = `Anual: ${fmtMoney(cashflowMensual*12)}`;
+  document.getElementById('roiBruta').textContent = rentabilidadBruta.toFixed(2) + '%';
+}
+['roiPrecio','roiRenta','roiGastos','roiVacancia'].forEach(id => document.getElementById(id).addEventListener('input', calcRoi));
+calcRoi();
+
+/* ---------- Vencimientos ---------- */
+function loadVenc(){ return JSON.parse(localStorage.getItem('mipropia_vencimientos') || '[]'); }
+function saveVenc(list){ localStorage.setItem('mipropia_vencimientos', JSON.stringify(list)); }
+
+function renderVenc(){
+  const list = loadVenc();
+  const tbody = document.getElementById('vencTbody');
+  const emptyEl = document.getElementById('vencEmpty');
+  if (!list.length){ tbody.innerHTML = ''; emptyEl.style.display = 'block'; return; }
+  emptyEl.style.display = 'none';
+
+  const withDays = list.map((item, idx) => {
+    const venceDate = new Date(item.inicio);
+    venceDate.setMonth(venceDate.getMonth() + parseInt(item.plazo));
+    const days = Math.ceil((venceDate - new Date()) / (1000*60*60*24));
+    return { ...item, idx, venceDate, days };
+  }).sort((a,b) => a.days - b.days);
+
+  tbody.innerHTML = withDays.map(item => {
+    let color = 'verde';
+    if (item.days <= 7) color = 'rojo'; else if (item.days <= 30) color = 'naranja';
+    return `<tr>
+      <td><span class="semaforo ${color}"></span></td>
+      <td>${item.cliente}</td>
+      <td>${new Date(item.inicio).toLocaleDateString('es-AR')}</td>
+      <td>${item.venceDate.toLocaleDateString('es-AR')}</td>
+      <td>${item.days} días</td>
+      <td><button data-idx="${item.idx}" class="delVencBtn" style="border:none;background:none;color:#c33;cursor:pointer;">Eliminar</button></td>
+    </tr>`;
+  }).join('');
+
+  tbody.querySelectorAll('.delVencBtn').forEach(b => b.addEventListener('click', () => {
+    const list2 = loadVenc(); list2.splice(parseInt(b.dataset.idx), 1); saveVenc(list2); renderVenc();
+  }));
+}
+renderVenc();
+
+document.getElementById('vencAddBtn').addEventListener('click', () => {
+  const cliente = document.getElementById('vencCliente').value.trim();
+  const inicio = document.getElementById('vencInicio').value;
+  const plazo = document.getElementById('vencPlazo').value;
+  if (!cliente || !inicio || !plazo) return;
+  const list = loadVenc();
+  list.push({ cliente, inicio, plazo });
+  saveVenc(list);
+  document.getElementById('vencCliente').value = '';
+  document.getElementById('vencInicio').value = '';
+  document.getElementById('vencPlazo').value = '24';
+  renderVenc();
+});
+
+/* ---------- Tasación comparable ---------- */
+let comparables = JSON.parse(localStorage.getItem('mipropia_comparables') || '[]');
+
+function renderComparables(){
+  const tbody = document.getElementById('tasCompTbody');
+  const emptyEl = document.getElementById('tasCompEmpty');
+  if (!comparables.length){ tbody.innerHTML = ''; emptyEl.style.display = 'block'; return; }
+  emptyEl.style.display = 'none';
+
+  tbody.innerHTML = comparables.map((comp, idx) => {
+    const m2_precio = comp.m2 > 0 ? (comp.precio / comp.m2).toFixed(2) : '—';
+    return `<tr>
+      <td>${comp.ref}</td>
+      <td>${comp.m2} m²</td>
+      <td>USD ${parseFloat(comp.precio).toLocaleString('es-AR')}</td>
+      <td>USD ${m2_precio}/m²</td>
+      <td><button data-idx="${idx}" class="delCompBtn" style="border:none;background:none;color:#c33;cursor:pointer;font-size:12px;">Eliminar</button></td>
+    </tr>`;
+  }).join('');
+
+  tbody.querySelectorAll('.delCompBtn').forEach(b => b.addEventListener('click', () => {
+    comparables.splice(parseInt(b.dataset.idx), 1);
+    localStorage.setItem('mipropia_comparables', JSON.stringify(comparables));
+    renderComparables();
+    updateTasResult();
+  }));
+
+  updateTasResult();
+}
+
+function updateTasResult(){
+  const m2Propia = parseFloat(document.getElementById('tasM2Propia').value) || 0;
+  if (comparables.length === 0){
+    document.getElementById('tasValorM2').textContent = '—';
+    document.getElementById('tasRangoM2').textContent = '';
+    document.getElementById('tasValorTotal').textContent = '—';
+    document.getElementById('tasRangoTotal').textContent = '';
+    return;
+  }
+
+  const precios_m2 = comparables.map(c => c.m2 > 0 ? c.precio / c.m2 : 0).filter(p => p > 0);
+  const promedio = precios_m2.reduce((a,b) => a + b, 0) / precios_m2.length;
+  const minimo = Math.min(...precios_m2);
+  const maximo = Math.max(...precios_m2);
+
+  document.getElementById('tasValorM2').textContent = 'USD ' + promedio.toFixed(2) + '/m²';
+  document.getElementById('tasRangoM2').textContent = `Rango: USD ${minimo.toFixed(2)} - ${maximo.toFixed(2)}/m²`;
+
+  if (m2Propia > 0){
+    const total = promedio * m2Propia;
+    document.getElementById('tasValorTotal').textContent = 'USD ' + total.toLocaleString('es-AR', {maximumFractionDigits: 0});
+    document.getElementById('tasRangoTotal').textContent = `Rango: USD ${(minimo*m2Propia).toLocaleString('es-AR', {maximumFractionDigits: 0})} - ${(maximo*m2Propia).toLocaleString('es-AR', {maximumFractionDigits: 0})}`;
+  }
+}
+
+document.getElementById('tasCompAddBtn').addEventListener('click', () => {
+  const ref = document.getElementById('tasCompRef').value.trim();
+  const m2 = parseFloat(document.getElementById('tasCompM2').value) || 0;
+  const precio = parseFloat(document.getElementById('tasCompPrecio').value) || 0;
+  if (!ref || m2 <= 0 || precio <= 0) return;
+  comparables.push({ ref, m2, precio });
+  localStorage.setItem('mipropia_comparables', JSON.stringify(comparables));
+  document.getElementById('tasCompRef').value = '';
+  document.getElementById('tasCompM2').value = '';
+  document.getElementById('tasCompPrecio').value = '';
+  renderComparables();
+});
+
+['tasM2Propia'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', updateTasResult);
+});
+
+renderComparables();
+
+/* ---------- Generador de boletos de compraventa ---------- */
+document.getElementById('bolGenerarBtn').addEventListener('click', () => {
+  const vendedorNombre = document.getElementById('bolVendedorNombre').value.trim();
+  const vendedorDni = document.getElementById('bolVendedorDni').value.trim();
+  const compradorNombre = document.getElementById('bolCompradorNombre').value.trim();
+  const compradorDni = document.getElementById('bolCompradorDni').value.trim();
+  const direccion = document.getElementById('bolDireccion').value.trim();
+  const partida = document.getElementById('bolPartida').value.trim();
+  const precio = document.getElementById('bolPrecio').value.trim();
+  const senia = document.getElementById('bolSenia').value.trim();
+  const formaPago = document.getElementById('bolFormaPago').value.trim();
+  const plazo = document.getElementById('bolPlazo').value.trim();
+  const observaciones = document.getElementById('bolObservaciones').value.trim();
+  const fecha = document.getElementById('bolFecha').value.trim();
+
+  if (!vendedorNombre || !compradorNombre || !direccion || !precio){
+    alert('Completá al menos vendedor, comprador, dirección y precio.');
+    return;
+  }
+
+  const texto = `BOLETO DE COMPRAVENTA
+
+En ${fecha || '[ciudad y fecha]'}, entre ${vendedorNombre}${vendedorDni ? ', DNI ' + vendedorDni : ''}, en adelante EL VENDEDOR, y ${compradorNombre}${compradorDni ? ', DNI ' + compradorDni : ''}, en adelante EL COMPRADOR, se conviene celebrar el presente boleto de compraventa sujeto a las siguientes cláusulas:
+
+PRIMERA — Objeto: EL VENDEDOR vende y EL COMPRADOR compra el inmueble ubicado en ${direccion}${partida ? ', ' + partida : ''}.
+
+SEGUNDA — Precio: El precio total de la operación se fija en ${precio}.
+
+TERCERA — Seña: ${senia || 'A convenir entre las partes.'}
+
+CUARTA — Saldo y forma de pago: ${formaPago || 'A convenir entre las partes.'}
+
+QUINTA — Plazo de escrituración: ${plazo || 'A convenir entre las partes.'}
+
+SEXTA — Observaciones: ${observaciones || 'Sin observaciones particulares.'}
+
+Las partes dejan constancia de que el presente instrumento constituye un boleto de compraventa preliminar, sujeto a revisión y a la escritura traslativa de dominio ante escribano público.
+
+
+_______________________                    _______________________
+        EL VENDEDOR                                  EL COMPRADOR`;
+
+  document.getElementById('bolPreviewContent').textContent = texto;
+  document.getElementById('bolPreviewBox').style.display = 'block';
+  window._bolTextoActual = texto;
+});
+
+document.getElementById('bolCopiarBtn').addEventListener('click', () => {
+  navigator.clipboard.writeText(window._bolTextoActual || '');
+  const btn = document.getElementById('bolCopiarBtn');
+  const original = btn.textContent;
+  btn.textContent = '✓ Copiado';
+  setTimeout(() => { btn.textContent = original; }, 1500);
+});
+
+document.getElementById('bolDescargarBtn').addEventListener('click', () => {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const texto = window._bolTextoActual || '';
+  doc.setFont('helvetica'); doc.setFontSize(11);
+  const lines = doc.splitTextToSize(texto, 170);
+  doc.text(lines, 20, 25);
+  doc.save('Boleto_compraventa_MiPropIA.pdf');
+});
+
+/* ---------- Tasación comparable ---------- */
+function loadComparables(){ return JSON.parse(localStorage.getItem('mipropia_comparables') || '[]'); }
+function saveComparables(list){ localStorage.setItem('mipropia_comparables', JSON.stringify(list)); }
+
+function renderComparables(){
+  const list = loadComparables();
+  const tbody = document.getElementById('tasCompTbody');
+  const emptyEl = document.getElementById('tasCompEmpty');
+  if (!list.length){ tbody.innerHTML = ''; emptyEl.style.display = 'block'; calcTasacion(); return; }
+  emptyEl.style.display = 'none';
+  tbody.innerHTML = list.map((c, idx) => {
+    const valorM2 = c.m2 > 0 ? (c.precio / c.m2) : 0;
+    return `<tr>
+      <td>${c.ref}</td>
+      <td>${c.m2}</td>
+      <td>${fmtMoney(c.precio)}</td>
+      <td>${fmtMoney(Math.round(valorM2))}</td>
+      <td><button data-idx="${idx}" class="delCompBtn" style="border:none;background:none;color:#c33;cursor:pointer;">Eliminar</button></td>
+    </tr>`;
+  }).join('');
+  tbody.querySelectorAll('.delCompBtn').forEach(b => b.addEventListener('click', () => {
+    const list2 = loadComparables(); list2.splice(parseInt(b.dataset.idx), 1); saveComparables(list2); renderComparables();
+  }));
+  calcTasacion();
+}
+renderComparables();
+
+document.getElementById('tasCompAddBtn').addEventListener('click', () => {
+  const ref = document.getElementById('tasCompRef').value.trim();
+  const m2 = parseFloat(document.getElementById('tasCompM2').value) || 0;
+  const precio = parseFloat(document.getElementById('tasCompPrecio').value) || 0;
+  if (!ref || !m2 || !precio) return;
+  const list = loadComparables();
+  list.push({ ref, m2, precio });
+  saveComparables(list);
+  document.getElementById('tasCompRef').value = '';
+  document.getElementById('tasCompM2').value = '';
+  document.getElementById('tasCompPrecio').value = '';
+  renderComparables();
+});
+
+function calcTasacion(){
+  const list = loadComparables();
+  const m2Propia = parseFloat(document.getElementById('tasM2Propia').value) || 0;
+  if (!list.length){
+    document.getElementById('tasValorM2').textContent = '—';
+    document.getElementById('tasRangoM2').textContent = '';
+    document.getElementById('tasValorTotal').textContent = '—';
+    document.getElementById('tasRangoTotal').textContent = '';
+    return;
+  }
+  const valoresM2 = list.filter(c => c.m2 > 0).map(c => c.precio / c.m2);
+  const promedio = valoresM2.reduce((a,b) => a+b, 0) / valoresM2.length;
+  const min = Math.min(...valoresM2);
+  const max = Math.max(...valoresM2);
+  document.getElementById('tasValorM2').textContent = fmtMoney(Math.round(promedio)) + '/m²';
+  document.getElementById('tasRangoM2').textContent = `Rango de comparables: ${fmtMoney(Math.round(min))} – ${fmtMoney(Math.round(max))} por m²`;
+  if (m2Propia > 0){
+    const valorEstimado = promedio * m2Propia;
+    const valorMin = min * m2Propia;
+    const valorMax = max * m2Propia;
+    document.getElementById('tasValorTotal').textContent = fmtMoney(Math.round(valorEstimado));
+    document.getElementById('tasRangoTotal').textContent = `Rango estimado: ${fmtMoney(Math.round(valorMin))} – ${fmtMoney(Math.round(valorMax))}`;
+  } else {
+    document.getElementById('tasValorTotal').textContent = 'Cargá los m² de tu propiedad';
+    document.getElementById('tasRangoTotal').textContent = '';
+  }
+}
+document.getElementById('tasM2Propia').addEventListener('input', calcTasacion);
+
+/* ---------- Verificación documental ---------- */
+const VERIF_CHECKLIST_ITEMS = [
+  'Escritura o título de propiedad',
+  'Informe de dominio actualizado',
+  'Certificado de inhibiciones del vendedor',
+  'Libre deuda de impuesto inmobiliario / ABL',
+  'Libre deuda de expensas (si aplica)',
+  'Boleto de compraventa firmado',
+  'DNI de comprador y vendedor',
+  'Planos aprobados (si hay reforma o ampliación)',
+  'Reglamento de copropiedad (si es PH o consorcio)'
+];
+
+function loadVerifChecklist(){ return JSON.parse(localStorage.getItem('mipropia_verif_checklist') || '{}'); }
+function saveVerifChecklist(state){ localStorage.setItem('mipropia_verif_checklist', JSON.stringify(state)); }
+
+function renderVerifChecklist(){
+  const state = loadVerifChecklist();
+  const container = document.getElementById('verifChecklist');
+  container.innerHTML = VERIF_CHECKLIST_ITEMS.map((item, idx) => `
+    <label style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;cursor:pointer;">
+      <input type="checkbox" data-idx="${idx}" ${state[idx] ? 'checked' : ''} style="width:17px;height:17px;flex-shrink:0;">
+      ${item}
+    </label>
+  `).join('');
+  container.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', () => {
+    const s = loadVerifChecklist();
+    s[cb.dataset.idx] = cb.checked;
+    saveVerifChecklist(s);
+  }));
+}
+renderVerifChecklist();
+
+const verifDropzone = document.getElementById('verifDropzone');
+const verifFileInput = document.getElementById('verifFileInput');
+const verifResult = document.getElementById('verifResult');
+
+verifDropzone.addEventListener('click', () => verifFileInput.click());
+verifDropzone.addEventListener('dragover', (e) => { e.preventDefault(); verifDropzone.style.borderColor = 'var(--brand-light)'; });
+verifDropzone.addEventListener('dragleave', () => { verifDropzone.style.borderColor = 'var(--border)'; });
+verifDropzone.addEventListener('drop', (e) => {
+  e.preventDefault(); verifDropzone.style.borderColor = 'var(--border)';
+  if (e.dataTransfer.files[0]) analizarDocumentoVerif(e.dataTransfer.files[0]);
+});
+verifFileInput.addEventListener('change', (e) => { if (e.target.files[0]) analizarDocumentoVerif(e.target.files[0]); });
+
+const SYSTEM_PROMPT_VERIF = `Sos un analista documental para operaciones inmobiliarias en Argentina. Vas a recibir el texto de un informe de dominio, certificado de inhibiciones, libre deuda u otro documento registral/administrativo relacionado con una compraventa. Respondé EXCLUSIVAMENTE con un objeto JSON válido (sin texto adicional, sin markdown, sin backticks) con esta forma exacta:
+{"tipo_documento":"informe_dominio|inhibiciones|libre_deuda|otro","titular":"...","estado":"...","resumen":"...","alertas":["..."]}
+En alertas marcá gravámenes, embargos, inhibiciones, deudas o cualquier dato que deba revisar un escribano antes de avanzar con la operación. Si no hay alertas, devolvé un array vacío.`;
+
+async function analizarDocumentoVerif(file){
+  const key = getApiKey();
+  if (!key){ verifResult.innerHTML = '<p class="empty">Cargá tu API key de Anthropic en el panel izquierdo para analizar documentos.</p>'; return; }
+  if (file.type !== 'application/pdf'){ verifResult.innerHTML = '<p class="empty">Por ahora solo se admiten archivos PDF.</p>'; return; }
+
+  verifResult.innerHTML = '<div class="loading" style="color:var(--brand-light);font-size:20px;margin-top:16px;"><span></span><span></span><span></span></div>';
+  try {
+    const text = await extractPdfText(file);
+    const raw = await callClaude(
+      [{ role: 'user', content: `Documento a analizar:\n\n${text.slice(0, 18000)}` }],
+      SYSTEM_PROMPT_VERIF,
+      1000
+    );
+    let data;
+    try { data = JSON.parse(raw.trim().replace(/^```json/, '').replace(/```$/, '').trim()); }
+    catch(parseErr){ throw new Error('La IA no devolvió un JSON válido. Probá de nuevo.'); }
+
+    const alerts = (data.alertas || []).map(a => `<li>${a}</li>`).join('');
+    verifResult.innerHTML = `
+      <div class="doc-card" style="margin-top:18px;"><h4>Tipo de documento</h4><div class="val">${data.tipo_documento || '—'}</div></div>
+      <div class="calc-grid">
+        <div class="doc-card"><h4>Titular</h4><div class="val">${data.titular || '—'}</div></div>
+        <div class="doc-card"><h4>Estado</h4><div class="val">${data.estado || '—'}</div></div>
+      </div>
+      <div class="doc-card"><h4>Resumen</h4><div class="val">${data.resumen || '—'}</div></div>
+      <div class="doc-card"><h4>⚠️ Alertas</h4>${alerts ? `<ul class="alert-list">${alerts}</ul>` : '<p class="val muted">Sin alertas detectadas.</p>'}</div>
+      <p class="disclaimer">Verificación de apoyo — confirmá siempre con el Registro de la Propiedad y tu escribano antes de firmar.</p>
+    `;
+  } catch(err){
+    verifResult.innerHTML = `<p class="empty">⚠️ ${err.message.slice(0,220)}</p>`;
+  }
+}
+
+/* ---------- Checklist Alquiler ---------- */
+const VERIF_CHECKLIST_ALQUILER_ITEMS = [
+  'DNI de inquilino y garante',
+  'Recibo de sueldo / constancia de ingresos del inquilino',
+  'Garantía propietaria o seguro de caución',
+  'Informe de deuda / antecedentes del inquilino',
+  'Seguro de responsabilidad civil / incendio',
+  'Contrato de locación firmado (Código Civil y Comercial, DNU 70/2023)',
+  'Inventario del inmueble (si está amoblado)',
+  'Comprobante de depósito en garantía'
+];
+function loadVerifChecklistAlquiler(){ return JSON.parse(localStorage.getItem('mipropia_verif_checklist_alquiler') || '{}'); }
+function saveVerifChecklistAlquiler(state){ localStorage.setItem('mipropia_verif_checklist_alquiler', JSON.stringify(state)); }
+function renderVerifChecklistAlquiler(){
+  const state = loadVerifChecklistAlquiler();
+  const container = document.getElementById('verifChecklistAlquiler');
+  container.innerHTML = VERIF_CHECKLIST_ALQUILER_ITEMS.map((item, idx) => `
+    <label style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;cursor:pointer;">
+      <input type="checkbox" data-idx="${idx}" ${state[idx] ? 'checked' : ''} style="width:17px;height:17px;flex-shrink:0;">
+      ${item}
+    </label>
+  `).join('');
+  container.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', () => {
+    const s = loadVerifChecklistAlquiler();
+    s[cb.dataset.idx] = cb.checked;
+    saveVerifChecklistAlquiler(s);
+  }));
+}
+renderVerifChecklistAlquiler();
+
+/* ---------- Crédito hipotecario / cuota UVA ---------- */
+function calcCredito(){
+  const monto = parseFloat(document.getElementById('creditoMonto').value) || 0;
+  const anios = parseFloat(document.getElementById('creditoPlazo').value) || 0;
+  const tna = parseFloat(document.getElementById('creditoTasa').value) || 0;
+  const valorUva = parseFloat(document.getElementById('creditoValorUva').value) || 0;
+  if (!monto || !anios || !tna){ return; }
+  const n = anios * 12;
+  const i = (tna / 100) / 12;
+  const cuota = i === 0 ? (monto / n) : (monto * i) / (1 - Math.pow(1 + i, -n));
+  document.getElementById('creditoCuota').textContent = '$' + cuota.toLocaleString('es-AR', {maximumFractionDigits:0});
+  document.getElementById('creditoPlazoMeses').textContent = n + ' cuotas';
+  document.getElementById('creditoTotalPagar').textContent = '$' + (cuota * n).toLocaleString('es-AR', {maximumFractionDigits:0});
+  document.getElementById('creditoCuotaUva').textContent = valorUva > 0 ? (cuota / valorUva).toLocaleString('es-AR', {maximumFractionDigits:1}) + ' UVAs' : '—';
+}
+['creditoMonto','creditoPlazo','creditoTasa','creditoValorUva'].forEach(id => document.getElementById(id).addEventListener('input', calcCredito));
+
+/* ---------- Cartera de propiedades ---------- */
+function loadPropiedades(){ return JSON.parse(localStorage.getItem('mipropia_propiedades') || '[]'); }
+function savePropiedades(list){ localStorage.setItem('mipropia_propiedades', JSON.stringify(list)); }
+
+const carteraListView = document.getElementById('carteraListView');
+const carteraDetailView = document.getElementById('carteraDetailView');
+const propTableBody = document.getElementById('propTableBody');
+const propEmpty = document.getElementById('propEmpty');
+let propActualId = null;
+
+function estadoLabel(e){ return e === 'disponible' ? 'Disponible' : e === 'reservada' ? 'Reservada' : 'Vendida'; }
+
+function renderPropiedades(){
+  const list = loadPropiedades();
+  propEmpty.style.display = list.length ? 'none' : 'block';
+  propTableBody.innerHTML = list.map(p => `
+    <tr style="cursor:pointer;" data-id="${p.id}">
+      <td>${p.direccion}</td>
+      <td>${p.tipo}</td>
+      <td>${p.m2 || '—'}</td>
+      <td>${p.precio || '—'}</td>
+      <td><span class="estado-pill ${p.estado}">${estadoLabel(p.estado)}</span></td>
+      <td>${p.cliente || '—'}</td>
+      <td><button class="btn btn-ghost" data-openprop="${p.id}" style="font-size:12px;padding:6px 10px;">Ver →</button></td>
+    </tr>
+  `).join('');
+  propTableBody.querySelectorAll('[data-openprop]').forEach(btn => btn.addEventListener('click', (e) => {
+    e.stopPropagation(); openPropDetail(btn.dataset.openprop);
+  }));
+  propTableBody.querySelectorAll('tr[data-id]').forEach(tr => tr.addEventListener('click', () => openPropDetail(tr.dataset.id)));
+}
+renderPropiedades();
+
+document.getElementById('btnAddProp').addEventListener('click', () => {
+  const direccion = document.getElementById('propDireccion').value.trim();
+  if (!direccion) return;
+  const list = loadPropiedades();
+  list.push({
+    id: Date.now().toString(),
+    direccion,
+    tipo: document.getElementById('propTipo').value,
+    m2: document.getElementById('propM2').value,
+    ambientes: document.getElementById('propAmbientes').value,
+    precio: document.getElementById('propPrecio').value,
+    estado: document.getElementById('propEstado').value,
+    cliente: document.getElementById('propCliente').value,
+    visitas: []
+  });
+  savePropiedades(list);
+  ['propDireccion','propM2','propAmbientes','propPrecio','propCliente'].forEach(id => document.getElementById(id).value = '');
+  renderPropiedades();
+});
+
+function openPropDetail(id){
+  propActualId = id;
+  const p = loadPropiedades().find(x => x.id === id);
+  if (!p) return;
+  carteraListView.style.display = 'none';
+  carteraDetailView.style.display = 'block';
+  document.getElementById('propDetDireccion').textContent = p.direccion;
+  document.getElementById('propDetEstado').textContent = estadoLabel(p.estado);
+  document.getElementById('propDetEstado').className = 'estado-pill ' + p.estado;
+  document.getElementById('propDetTipo').textContent = p.tipo;
+  document.getElementById('propDetM2').textContent = p.m2 || '—';
+  document.getElementById('propDetAmbientes').textContent = p.ambientes || '—';
+  document.getElementById('propDetPrecio').textContent = p.precio || '—';
+  document.getElementById('propDetCliente').textContent = p.cliente || '—';
+  document.getElementById('propDetEstadoSelect').value = p.estado;
+  document.getElementById('avisoResultBox').style.display = 'none';
+  document.getElementById('avisoExtra').value = '';
+  renderVisitas(p);
+}
+document.getElementById('propBackLink').addEventListener('click', (e) => {
+  e.preventDefault();
+  carteraDetailView.style.display = 'none';
+  carteraListView.style.display = 'block';
+  renderPropiedades();
+});
+document.getElementById('btnDeleteProp').addEventListener('click', () => {
+  if (!confirm('¿Eliminar esta propiedad de la cartera?')) return;
+  savePropiedades(loadPropiedades().filter(x => x.id !== propActualId));
+  carteraDetailView.style.display = 'none';
+  carteraListView.style.display = 'block';
+  renderPropiedades();
+});
+document.getElementById('propDetEstadoSelect').addEventListener('change', (e) => {
+  const list = loadPropiedades();
+  const p = list.find(x => x.id === propActualId);
+  if (!p) return;
+  p.estado = e.target.value;
+  savePropiedades(list);
+  document.getElementById('propDetEstado').textContent = estadoLabel(p.estado);
+  document.getElementById('propDetEstado').className = 'estado-pill ' + p.estado;
+});
+
+document.querySelectorAll('[data-psub]').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('[data-psub]').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#carteraDetailView .subpanel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('sub-prop-' + btn.dataset.psub).classList.add('active');
+}));
+
+const SYSTEM_PROMPT_AVISO = `Sos un redactor de avisos inmobiliarios para portales argentinos (Zonaprop, Argenprop). A partir de los datos de una propiedad, escribí un aviso atractivo, claro y honesto, en español rioplatense, de entre 80 y 150 palabras, con un título corto en la primera línea y el cuerpo del aviso después. No inventes datos que no te dieron. Respondé solo con el texto del aviso, sin explicaciones adicionales ni markdown.`;
+
+document.getElementById('btnGenerarAviso').addEventListener('click', async () => {
+  const p = loadPropiedades().find(x => x.id === propActualId);
+  if (!p) return;
+  const key = getApiKey();
+  const box = document.getElementById('avisoResultBox');
+  const extra = document.getElementById('avisoExtra').value.trim();
+  if (!key){ alert('Cargá tu API key de Anthropic en el panel izquierdo para generar el aviso.'); return; }
+  const btn = document.getElementById('btnGenerarAviso');
+  btn.disabled = true; btn.textContent = 'Generando...';
+  try {
+    const datos = `Dirección: ${p.direccion}\nTipo: ${p.tipo}\nm²: ${p.m2 || '—'}\nAmbientes: ${p.ambientes || '—'}\nPrecio: ${p.precio || '—'}\nEstado: ${estadoLabel(p.estado)}\n${extra ? 'Detalles adicionales: ' + extra : ''}`;
+    const texto = await callClaude([{ role: 'user', content: datos }], SYSTEM_PROMPT_AVISO, 500);
+    document.getElementById('avisoTexto').value = texto.trim();
+    box.style.display = 'block';
+  } catch(err){
+    alert('No se pudo generar el aviso: ' + err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = '✨ Generar aviso';
+  }
+});
+document.getElementById('btnCopiarAviso').addEventListener('click', () => {
+  const ta = document.getElementById('avisoTexto');
+  ta.select();
+  navigator.clipboard.writeText(ta.value).then(() => {
+    const btn = document.getElementById('btnCopiarAviso');
+    const orig = btn.textContent;
+    btn.textContent = '✅ Copiado';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+});
+
+/* ---------- Visitas ---------- */
+function renderVisitas(p){
+  const tbody = document.getElementById('visitasTableBody');
+  const visitas = p.visitas || [];
+  document.getElementById('visitasEmpty').style.display = visitas.length ? 'none' : 'block';
+  const hoy = new Date().toISOString().slice(0,10);
+  tbody.innerHTML = visitas.slice().sort((a,b) => (a.fecha+a.hora).localeCompare(b.fecha+b.hora)).map(v => `
+    <tr>
+      <td>${v.fecha}</td>
+      <td>${v.hora || '—'}</td>
+      <td>${v.cliente || '—'}</td>
+      <td>${v.fecha < hoy ? '<span class="muted">Pasada</span>' : '<span style="color:var(--brand-light);font-weight:600;">Próxima</span>'}</td>
+      <td><button class="btn btn-ghost" data-delvisita="${v.id}" style="font-size:12px;padding:5px 9px;">🗑️</button></td>
+    </tr>
+  `).join('');
+  tbody.querySelectorAll('[data-delvisita]').forEach(btn => btn.addEventListener('click', () => {
+    const list = loadPropiedades();
+    const prop = list.find(x => x.id === propActualId);
+    prop.visitas = (prop.visitas || []).filter(v => v.id !== btn.dataset.delvisita);
+    savePropiedades(list);
+    renderVisitas(prop);
+  }));
+}
+document.getElementById('btnAddVisita').addEventListener('click', () => {
+  const fecha = document.getElementById('visitaFecha').value;
+  if (!fecha) return;
+  const list = loadPropiedades();
+  const p = list.find(x => x.id === propActualId);
+  if (!p) return;
+  p.visitas = p.visitas || [];
+  p.visitas.push({
+    id: Date.now().toString(),
+    fecha,
+    hora: document.getElementById('visitaHora').value,
+    cliente: document.getElementById('visitaCliente').value
+  });
+  savePropiedades(list);
+  document.getElementById('visitaFecha').value = '';
+  document.getElementById('visitaHora').value = '';
+  document.getElementById('visitaCliente').value = '';
+  renderVisitas(p);
+});
+
+/* ---------- Comisiones ---------- */
+function loadComisiones(){ return JSON.parse(localStorage.getItem('mipropia_comisiones') || '[]'); }
+function saveComisiones(list){ localStorage.setItem('mipropia_comisiones', JSON.stringify(list)); }
+
+function renderComisiones(){
+  const list = loadComisiones();
+  const tbody = document.getElementById('comisionesTableBody');
+  document.getElementById('comisionesEmpty').style.display = list.length ? 'none' : 'block';
+  tbody.innerHTML = list.slice().sort((a,b) => b.fecha.localeCompare(a.fecha)).map(c => `
+    <tr>
+      <td>${c.fecha}</td>
+      <td>${c.propiedad}</td>
+      <td>${c.tipo === 'venta' ? 'Venta' : 'Alquiler'}</td>
+      <td>$${(parseFloat(c.monto)||0).toLocaleString('es-AR')}</td>
+      <td>${c.porcentaje}%</td>
+      <td><strong>$${c.comision.toLocaleString('es-AR', {maximumFractionDigits:0})}</strong></td>
+      <td><button class="btn btn-ghost" data-delcom="${c.id}" style="font-size:12px;padding:5px 9px;">🗑️</button></td>
+    </tr>
+  `).join('');
+  tbody.querySelectorAll('[data-delcom]').forEach(btn => btn.addEventListener('click', () => {
+    saveComisiones(loadComisiones().filter(c => c.id !== btn.dataset.delcom));
+    renderComisiones();
+  }));
+  const total = list.reduce((s,c) => s + c.comision, 0);
+  const hoyMes = new Date().toISOString().slice(0,7);
+  const totalMes = list.filter(c => c.fecha.slice(0,7) === hoyMes).reduce((s,c) => s + c.comision, 0);
+  document.getElementById('comisionesTotal').textContent = '$' + total.toLocaleString('es-AR', {maximumFractionDigits:0});
+  document.getElementById('comisionesTotalMes').textContent = '$' + totalMes.toLocaleString('es-AR', {maximumFractionDigits:0});
+}
+renderComisiones();
+
+document.getElementById('btnAddComision').addEventListener('click', () => {
+  const fecha = document.getElementById('comFecha').value;
+  const propiedad = document.getElementById('comPropiedad').value.trim();
+  const monto = parseFloat(document.getElementById('comMonto').value) || 0;
+  const porcentaje = parseFloat(document.getElementById('comPorcentaje').value) || 0;
+  if (!fecha || !propiedad || !monto) return;
+  const list = loadComisiones();
+  list.push({
+    id: Date.now().toString(),
+    fecha, propiedad,
+    tipo: document.getElementById('comTipo').value,
+    monto, porcentaje,
+    comision: monto * (porcentaje / 100)
+  });
+  saveComisiones(list);
+  document.getElementById('comPropiedad').value = '';
+  document.getElementById('comMonto').value = '';
+  renderComisiones();
+});
+</script>
+  <script src="tracker.js" defer></script>
+
+<script>
+const LAB_AUTH_URL = 'https://vps-6064485-x.dattaweb.com/webhook/labstudio-auth';
+const LAB_CLIENT_ID = '770326349307-rv1uf77479oc8ejrsh3hmhkieqgous2o.apps.googleusercontent.com';
+const LAB_PRODUCTO = 'mipropia';
+const LAB_USER_KEY = 'mipropia_user';
+function labMostrarSesion(data){
+  const overlay = document.getElementById('labLoginOverlay');
+  const chip = document.getElementById('labUserChip');
+  if (data.plan === 'gratis' && data.trialExpirado){
+    document.getElementById('labLoginCard').style.display = 'none';
+    document.getElementById('labTrialCard').style.display = 'block';
+    overlay.style.display = 'flex';
+    chip.style.display = 'none';
+    return;
+  }
+  overlay.style.display = 'none';
+  chip.style.display = 'flex';
+  const plan = data.plan === 'gratis'
+    ? (typeof data.diasRestantes === 'number' ? 'Prueba · '+(data.diasRestantes <= 0 ? 'último día' : data.diasRestantes+' día'+(data.diasRestantes===1?'':'s')) : 'Prueba')
+    : 'Plan '+data.plan.charAt(0).toUpperCase()+data.plan.slice(1);
+  document.getElementById('labUserChipText').innerHTML = '<b>'+data.nombre+'</b> · '+plan;
+}
+async function labManejarLogin(response){
+  const st = document.getElementById('lab-login-status');
+  st.textContent = 'Verificando…';
+  try{
+    const res = await fetch(LAB_AUTH_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ idToken: response.credential, producto: LAB_PRODUCTO }) });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || 'Error');
+    localStorage.setItem(LAB_USER_KEY, JSON.stringify(data));
+    labMostrarSesion(data);
+  }catch(e){
+    st.textContent = '⚠️ No se pudo verificar el ingreso. Probá de nuevo.';
+    console.error('Login:', e);
+  }
+}
+function labInitLogin(){
+  if (typeof google === 'undefined' || !google.accounts || !google.accounts.id){ setTimeout(labInitLogin, 300); return; }
+  google.accounts.id.initialize({ client_id: LAB_CLIENT_ID, callback: labManejarLogin });
+  const btn = document.getElementById('google-signin-btn');
+  if (btn) google.accounts.id.renderButton(btn, { theme:'outline', size:'large', text:'continue_with', width: 300 });
+}
+document.getElementById('labLogoutBtn').addEventListener('click', ()=>{
+  if (!confirm('¿Cerrar sesión?')) return;
+  localStorage.removeItem(LAB_USER_KEY);
+  document.getElementById('labUserChip').style.display = 'none';
+  document.getElementById('labTrialCard').style.display = 'none';
+  document.getElementById('labLoginCard').style.display = 'block';
+  document.getElementById('labLoginOverlay').style.display = 'flex';
+  document.getElementById('lab-login-status').textContent = '';
+});
+(function(){
+  const saved = localStorage.getItem(LAB_USER_KEY);
+  if (saved){ try{ labMostrarSesion(JSON.parse(saved)); }catch(e){} }
+  labInitLogin();
+})();
+</script>
+
+</body>
+</html>
