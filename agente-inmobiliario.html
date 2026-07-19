@@ -144,15 +144,27 @@
 .lab-user-chip b{color:var(--text);font-weight:600}
 .lab-user-chip button{background:none;border:none;color:#c0392b;cursor:pointer;font-size:12px;font-family:inherit}
 .lab-wa-btn{display:block;background:var(--brand);color:#fff;border-radius:12px;padding:13px 20px;font-weight:600;font-size:14px;text-decoration:none}
+.lab-pills{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px;text-align:left}
+.lab-pill{background:var(--bg-alt,#f4f4f0);border:1px solid var(--border,#ddd);border-radius:9px;padding:8px 12px;font-size:12px;color:var(--text-muted,#666)}
+.lab-paso{text-align:left;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted,#888);margin:18px 0 8px}
+.lab-key-input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border,#ddd);background:var(--bg,#fff);color:var(--text,#222);font-size:14px;font-family:monospace}
+.lab-enter-btn{width:100%;margin-top:18px;background:var(--brand);color:#fff;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .2s}
+.lab-enter-btn:disabled{opacity:.45;cursor:not-allowed}
 </style>
 <div class="lab-login-overlay" id="labLoginOverlay">
   <div class="lab-login-card" id="labLoginCard">
     <img src="favicon-192.png" alt="">
     <h1>Mi Prop<em>IA</em></h1>
-    <p class="lab-sub">Ingresá con Google para empezar — sin contraseñas, sin formularios.</p>
+    <p class="lab-sub">Tu gestor inmobiliario con IA.<br>Analizá contratos, calculá sellado y gestioná tu cartera.</p>
+    <div class="lab-pills"><div class="lab-pill">📄 Contratos y boletos</div><div class="lab-pill">🧮 Sellado y comisiones</div><div class="lab-pill">🏷️ Tasación y cartera</div><div class="lab-pill">📅 Vencimientos con semáforo</div></div>
+    <p class="lab-paso">Paso 1 — Identificate con Google</p>
     <div id="google-signin-btn"></div>
     <p id="lab-login-status"></p>
-    <p class="lab-login-note">🎁 <b>5 días de prueba gratis</b> con acceso completo.<br>Tus datos quedan siempre en tu navegador.</p>
+    <p class="lab-paso">Paso 2 — Tu API key de Anthropic</p>
+    <input type="password" class="lab-key-input" id="labKeyInput" placeholder="sk-ant-api03-..." autocomplete="off">
+    <p style="text-align:left;font-size:12px;color:var(--text-muted,#888);margin-top:8px;">Obtené tu key gratis en <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent);">console.anthropic.com</a> →</p>
+    <button class="lab-enter-btn" id="labEnterBtn" disabled>Ingresar al agente →</button>
+    <p class="lab-login-note">🎁 <b>5 días de prueba gratis</b> con acceso completo. 🔒 <b>Tu privacidad:</b> la API key se guarda solo en tu navegador y se borra al cerrar la pestaña. Este sitio no tiene backend ni registra tus datos.</p>
   </div>
   <div class="lab-login-card" id="labTrialCard" style="display:none;">
     <img src="favicon-192.png" alt="">
@@ -1589,6 +1601,8 @@ const LAB_AUTH_URL = 'https://vps-6064485-x.dattaweb.com/webhook/labstudio-auth'
 const LAB_CLIENT_ID = '770326349307-rv1uf77479oc8ejrsh3hmhkieqgous2o.apps.googleusercontent.com';
 const LAB_PRODUCTO = 'mipropia';
 const LAB_USER_KEY = 'mipropia_user';
+const LAB_API_KEY = 'mipropia_api_key';
+let labUserData = null;
 function labMostrarSesion(data){
   const overlay = document.getElementById('labLoginOverlay');
   const chip = document.getElementById('labUserChip');
@@ -1614,7 +1628,10 @@ async function labManejarLogin(response){
     const data = await res.json();
     if (!res.ok || data.error) throw new Error(data.error || 'Error');
     localStorage.setItem(LAB_USER_KEY, JSON.stringify(data));
-    labMostrarSesion(data);
+    labUserData = data;
+    if (data.plan === 'gratis' && data.trialExpirado){ labMostrarSesion(data); return; }
+    st.textContent = data.esNuevo ? '✅ ¡Cuenta creada, '+data.nombre+'! Completá el paso 2 y entrá.' : '✅ ¡Hola de nuevo, '+data.nombre+'!';
+    document.getElementById('labEnterBtn').disabled = false;
   }catch(e){
     st.textContent = '⚠️ No se pudo verificar el ingreso. Probá de nuevo.';
     console.error('Login:', e);
@@ -1626,6 +1643,16 @@ function labInitLogin(){
   const btn = document.getElementById('google-signin-btn');
   if (btn) google.accounts.id.renderButton(btn, { theme:'outline', size:'large', text:'continue_with', width: 300 });
 }
+document.getElementById('labEnterBtn').addEventListener('click', ()=>{
+  const k = document.getElementById('labKeyInput').value.trim();
+  if (k){
+    sessionStorage.setItem(LAB_API_KEY, k);
+    const appInput = document.getElementById('apiKeyInput');
+    if (appInput) appInput.value = k;
+    if (appInput) appInput.dispatchEvent(new Event('input'));
+  }
+  if (labUserData) labMostrarSesion(labUserData);
+});
 document.getElementById('labLogoutBtn').addEventListener('click', ()=>{
   if (!confirm('¿Cerrar sesión?')) return;
   localStorage.removeItem(LAB_USER_KEY);
@@ -1634,8 +1661,11 @@ document.getElementById('labLogoutBtn').addEventListener('click', ()=>{
   document.getElementById('labLoginCard').style.display = 'block';
   document.getElementById('labLoginOverlay').style.display = 'flex';
   document.getElementById('lab-login-status').textContent = '';
+  document.getElementById('labEnterBtn').disabled = true;
 });
 (function(){
+  const savedKey = sessionStorage.getItem(LAB_API_KEY);
+  if (savedKey) document.getElementById('labKeyInput').value = savedKey;
   const saved = localStorage.getItem(LAB_USER_KEY);
   if (saved){ try{ labMostrarSesion(JSON.parse(saved)); }catch(e){} }
   labInitLogin();
