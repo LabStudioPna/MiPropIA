@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="shortcut icon" href="favicon.ico">
 <link rel="manifest" href="site.webmanifest">
-<meta name="theme-color" content="#1E3A5F">
+<meta name="theme-color" content="#0A101C">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="MiPropIA">
@@ -32,399 +32,500 @@
 <meta name="twitter:image" content="https://labstudiopna.github.io/MiPropIA/og-image.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A101C;--bg-2:#111A2A;--bg-3:#182338;--bg-soft:#0D1524;
+  --border:#1F2C40;--border-soft:#182233;
+  --text:#EAF0F8;--mid:#93A2B8;--dim:#5C6C82;
+  --brand:#3E6A96;--brand-soft:#7FA8D4;--brand-2:#D68A5C;--brand-2-soft:#E8B48C;
+  --amber:#F59E0B;--red:#F87171;--ok:#10B981;--ok-soft:#34D399;
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'Inter',system-ui,-apple-system,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --radius:16px;
+}
+</style>
+<link rel="stylesheet" href="bento.css">
 </head>
 <body>
 
-<header class="site">
-  <nav class="nav">
-    <a href="#" class="brand"><img src="favicon-192.png" alt="MiPropIA"> Mi Prop<span class="ia">IA</span></a>
-    <div class="navlinks">
-      <a href="#features">Características</a>
-      <a href="#pricing">Precios</a>
-      <a href="guia-completa.html">📚 Guía Completa</a>
-      <a href="#contacto">Contacto</a>
-      <a href="agente-inmobiliario.html" class="mobile-only-cta">Ir al Agente →</a>
-    </div>
-    <div class="nav-actions">
-      <button class="theme-toggle" id="themeToggle" title="Modo claro/oscuro">🌙</button>
-      <a href="agente-inmobiliario.html" class="btn btn-primary">Ir al Agente →</a>
-      <button class="hamburger" id="hamburgerBtn" aria-label="Abrir menú">☰</button>
-    </div>
-  </nav>
-</header>
+<nav>
+  <a href="#" class="logo">
+    <img src="favicon-192.png" alt="MiPropIA">
+    <div class="logo-name">Mi Prop<em>IA</em></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Características</a></li>
+    <li><a href="#pricing">Precios</a></li>
+    <li><a href="#faq">Preguntas frecuentes</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+    <li><a href="guia-completa.html" target="_blank">Guía Completa</a></li>
+  </ul>
+  <a href="agente-inmobiliario.html" class="nav-cta" id="nav-cta-desktop">Ir al Agente →</a>
+  <button class="hamburger" id="hamburger" aria-label="Abrir menú" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
 
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#features" onclick="closeMobileMenu()">Características</a>
+  <a href="#pricing" onclick="closeMobileMenu()">Precios</a>
+  <a href="#faq" onclick="closeMobileMenu()">Preguntas frecuentes</a>
+  <a href="#contacto" onclick="closeMobileMenu()">Contacto</a>
+  <a href="guia-completa.html" target="_blank">Guía Completa</a>
+  <a href="agente-inmobiliario.html" class="nav-cta">Ir al Agente →</a>
+</div>
+
+<!-- HERO -->
 <section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
   <div class="container hero-grid">
     <div>
-      <span class="pill">🏠 Hecho en Paraná, para inmobiliarias argentinas</span>
-      <h1>Tu gestor inmobiliario <span>experto en IA</span></h1>
-      <p class="lead">Analiza contratos, calcula sellado y comisiones, y te avisa antes de que algo venza. Sin instalación, sin complicaciones — igual de simple que abrir WhatsApp.</p>
+      <span class="pill"><span class="dot"></span>Hecho en Paraná, para inmobiliarias argentinas</span>
+      <h1>Contratos que se <em>revisan solos</em></h1>
+      <p class="lead">Analizá contratos, calculá sellado y comisiones, y enterate antes de que algo venza. Sin instalación, sin complicaciones — igual de simple que abrir WhatsApp.</p>
       <div class="hero-cta">
-        <a href="agente-inmobiliario.html" class="btn btn-primary">Prueba 5 días gratis →</a>
+        <a href="agente-inmobiliario.html" class="btn btn-primary">Revisar mi primer contrato →</a>
         <a href="#features" class="btn btn-ghost">Ver características</a>
       </div>
       <div class="hero-stats">
-        <div class="stat"><b>30 seg</b><span>Análisis de contrato completo</span></div>
-        <div class="stat"><b>5</b><span>Módulos: chat, contratos, sellado, rentabilidad y vencimientos</span></div>
-        <div class="stat"><b>0%</b><span>Instalación</span></div>
-        <div class="stat"><b>100%</b><span>Corre en tu navegador — nada en servidores de terceros</span></div>
+        <div class="hstat"><b>30 seg</b><span>Análisis de contrato completo</span></div>
+        <div class="hstat"><b>14</b><span>Herramientas incluidas</span></div>
+        <div class="hstat"><b>100%</b><span>Corre en tu navegador</span></div>
       </div>
     </div>
-    <div class="mock">
-      <div class="mock-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp; mipropia.labstudiopna.github.io</div>
-      <div class="mock-body">
-        <div class="msg user">Te mando el contrato de locación para que lo revises</div>
-        <div class="msg bot"><b>MiPropIA:</b> Recibido. Analizando cláusulas contra el DNU 70/2023...</div>
-        <div class="mock-result">✓ Plazo: 24 meses &nbsp;|&nbsp; Índice: ICL trimestral &nbsp;|&nbsp; Canon: $350.000<br>⚠️ Falta cláusula de depósito de garantía — revisar antes de firmar</div>
+    <div class="hero-bento">
+      <div class="hb-tile hb-wide" style="grid-row:span 2">
+        <div class="hb-tag">Contrato · en vivo</div>
+        <div class="hb-chat-u">"Te mando el contrato de locación para que lo revises"</div>
+        <div class="hb-chat-a">Analizando cláusulas contra el DNU 70/2023...</div>
+        <div class="bento-hero-visual" style="margin-top:12px">
+          <div class="bhv-row"><span>Plazo</span><b>24 meses</b></div>
+          <div class="bhv-row"><span>Índice</span><b>ICL trimestral</b></div>
+          <div class="bhv-row"><span>Canon</span><b>$350.000</b></div>
+        </div>
+        <div class="hb-badges">
+          <span class="hb-badge a">Falta cláusula de depósito de garantía</span>
+        </div>
+      </div>
+      <div class="hb-tile">
+        <div class="hb-big">30s</div>
+        <div class="hb-lbl">análisis completo</div>
+      </div>
+      <div class="hb-tile">
+        <div class="hb-big g">5</div>
+        <div class="hb-lbl">módulos activos</div>
+      </div>
+      <div class="hb-tile hb-wide">
+        <div class="hb-tag">Vencimientos esta semana</div>
+        <div class="hb-badges">
+          <span class="hb-badge r">1 vencido</span>
+          <span class="hb-badge a">2 próximos</span>
+          <span class="hb-badge g">al día</span>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- TRUST STRIP -->
+<section class="trust" style="padding:0">
+  <div class="container trust-grid">
+    <div class="tstat"><b><em>30</em>seg</b><span>Análisis de contrato completo</span></div>
+    <div class="tstat"><b><em>14</em></b><span>Herramientas incluidas</span></div>
+    <div class="tstat"><b><em>0</em>%</b><span>Instalación</span></div>
+    <div class="tstat"><b><em>100</em>%</b><span>En tu navegador, nada en servidores de terceros</span></div>
+  </div>
+</section>
+
+<!-- FEATURES BENTO -->
 <section id="features">
-  <div class="container">
-    <div class="banner">
-      <div>
-        <h3>✨ Julio 2026 — nueva calculadora de rentabilidad de inversión</h3>
-        <p>Sumamos cap rate, cash flow y rentabilidad bruta para mostrarle al propietario o al inversor por qué esa propiedad conviene, además del analizador de contratos, sellado por provincia y vencimientos con semáforo.</p>
-      </div>
-      <a href="guia-completa.html" class="btn btn-accent">Ver qué trae →</a>
-    </div>
-  </div>
-</section>
-
-<section>
   <div class="container">
     <div class="section-head">
       <span class="eyebrow">Suite de herramientas</span>
       <h2>Todo lo que hoy resolvés a mano, en segundos</h2>
-      <p class="muted">Nada de "IA que opina el precio". Cada módulo produce un dato o un documento listo para usar.</p>
+      <p>Nada de "IA que opina el precio". Cada módulo produce un dato o un documento listo para usar.</p>
     </div>
-    <div class="grid cols-4">
-      <div class="card"><span class="icon">💬</span><h3>Chat inmobiliario IA</h3><p>Preguntas libres sobre ley de alquileres, sellado, comisiones. Adjuntá un documento, seguí la charla, y pedile que te ordene el perfil de un lead para matchearlo contra tu cartera.</p></div>
-      <div class="card"><span class="icon">📄</span><h3>Analizador de contratos</h3><p>Subí un PDF de contrato o boleto: extrae partes, plazo, monto e índice, y marca cláusulas fuera de norma.</p></div>
-      <div class="card"><span class="icon">🧮</span><h3>Sellado y comisión</h3><p>Calculadora por provincia con las alícuotas vigentes — sin llamar al escribano para confirmar un número.</p></div>
-      <div class="card"><span class="icon">📈</span><h3>Rentabilidad de inversión <span class="badge">Nuevo</span></h3><p>Cap rate, cash flow y rentabilidad bruta anual — el mismo tipo de análisis que ofrecen las plataformas internacionales, adaptado al peso argentino.</p></div>
-      <div class="card"><span class="icon">📅</span><h3>Vencimientos con semáforo</h3><p>Renovaciones, actualización de índice y vencimientos de contrato por cliente/propiedad, en rojo/naranja/verde.</p></div>
-      <div class="card"><span class="icon">📱</span><h3>Atención de leads por WhatsApp</h3><p>Un agente responde consultas al instante, califica al lead y agenda la visita — la velocidad de respuesta es lo que más pesa en la conversión. Infraestructura ya construida en n8n. <span class="badge">Próximamente</span></p></div>
-      <div class="card"><span class="icon">📝</span><h3>Generador de boletos</h3><p>Completá los datos de comprador, vendedor e inmueble y generá un boleto de compraventa listo para revisar con el escribano, con descarga en PDF.</p></div>
-      <div class="card"><span class="icon">📊</span><h3>Tasación comparable</h3><p>Cargá comparables de venta reciente por zona y m² para estimar un rango de valor defendible frente al propietario.</p></div>
-      <div class="card"><span class="icon">🔎</span><h3>Verificación documental</h3><p>Checklist de la documentación habitual de una compraventa + análisis con IA de informes de dominio, libre deuda e inhibiciones. Incluye la contraparte para alquiler.</p></div>
-      <div class="card"><span class="icon">🏠</span><h3>Cartera de propiedades <span class="badge">Nuevo</span></h3><p>Listado de propiedades en gestión (disponible/reservada/vendida) con sus datos clave, en vez de tenerlas sueltas en la cabeza o en WhatsApp.</p></div>
-      <div class="card"><span class="icon">💰</span><h3>Libro de comisiones ganadas <span class="badge">Nuevo</span></h3><p>Cada operación cerrada con su comisión — tu propio "cuánto facturé este mes" sin abrir otra planilla.</p></div>
-      <div class="card"><span class="icon">🏦</span><h3>Crédito hipotecario / cuota UVA <span class="badge">Nuevo</span></h3><p>Mostrale al comprador la cuota mensual estimada según el crédito, sin calcularla a mano ni buscarla en otro lado.</p></div>
-      <div class="card"><span class="icon">📢</span><h3>Generador de aviso para portales <span class="badge">Nuevo</span></h3><p>A partir de los datos ya cargados de una propiedad, arma el texto listo para pegar en Zonaprop o Argenprop.</p></div>
-      <div class="card"><span class="icon">📅</span><h3>Agenda de visitas <span class="badge">Nuevo</span></h3><p>Turnos de visita a propiedades, simple, ligado al cliente y a la propiedad, con vista de próximas y pasadas.</p></div>
+
+    <div class="bento-grid">
+      <div class="bento b-2x2">
+        <span class="badge-new">Julio 2026</span>
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg></div>
+        <h3>Analizador de contratos</h3>
+        <p>Subí un PDF de contrato o boleto: extrae partes, plazo, monto e índice, y marca cláusulas fuera de norma contra el DNU 70/2023.</p>
+        <div class="bento-hero-visual">
+          <div class="bhv-row"><span>Cláusulas revisadas</span><b>18/18</b></div>
+          <div class="bhv-row"><span>Fuera de norma</span><b>1 detectada</b></div>
+        </div>
+      </div>
+      <div class="bento b-2x1">
+        <span class="badge-new">Nuevo</span>
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></div>
+        <h3>Rentabilidad de inversión</h3>
+        <p>Cap rate, cash flow y rentabilidad bruta anual — el mismo análisis de las plataformas internacionales, adaptado al peso argentino.</p>
+      </div>
+      <div class="bento b-1x1">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+        <h3>Chat inmobiliario IA</h3>
+        <p>Preguntas libres sobre ley de alquileres, sellado y comisiones.</p>
+      </div>
+      <div class="bento b-1x1">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18M7 6h1v4"/></svg></div>
+        <h3>Sellado y comisión</h3>
+        <p>Calculadora por provincia con alícuotas vigentes.</p>
+      </div>
+      <div class="bento b-1x1">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <h3>Vencimientos con semáforo</h3>
+        <p>Renovaciones e índices por cliente, en rojo/naranja/verde.</p>
+      </div>
+      <div class="bento b-1x1">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <h3>Tasación comparable</h3>
+        <p>Rango de valor defendible frente al propietario.</p>
+      </div>
+    </div>
+
+    <div class="included">
+      <div class="included-head">
+        <h4>También incluido</h4>
+        <span>Sin cargo extra</span>
+      </div>
+      <div class="included-grid">
+        <div class="inc-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span><b>Generador de boletos</b> — boleto de compraventa listo para el escribano</div>
+        <div class="inc-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span><b>Verificación documental</b> — checklist + informes de dominio y libre deuda</div>
+        <div class="inc-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span><b>Cartera de propiedades</b> — disponible/reservada/vendida, todo en un lugar</div>
+        <div class="inc-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span><b>Libro de comisiones ganadas</b> — cuánto facturaste este mes, sin otra planilla</div>
+        <div class="inc-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span><b>Crédito hipotecario / cuota UVA</b> — estimación al instante para el comprador</div>
+        <div class="inc-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span><b>Generador de aviso para portales</b> — texto listo para Zonaprop o Argenprop</div>
+        <div class="inc-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span><b>Agenda de visitas</b> — turnos ligados al cliente y a la propiedad</div>
+        <div class="inc-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span><b>Atención de leads por WhatsApp</b> — responde y agenda solo (próximamente)</div>
+      </div>
     </div>
   </div>
 </section>
 
-<section>
+<!-- ROADMAP -->
+<section style="background:var(--bg-soft);border-top:1px solid var(--border-soft);border-bottom:1px solid var(--border-soft)">
   <div class="container">
     <div class="section-head">
       <span class="eyebrow">Transparencia</span>
-      <h2>Roadmap Público 2026</h2>
-      <p class="muted">Qué está disponible hoy y qué estamos preparando. Fase 2 y casi toda la Fase 3 ya están en producción.</p>
+      <h2>Roadmap público 2026</h2>
+      <p>Fase 2 y casi toda la Fase 3 ya están en producción. Somos honestos: cada feature se lanza cuando está lista.</p>
     </div>
-    <div class="grid cols-3">
-      <div class="card" style="border-left: 4px solid #2E7458;">
-        <span style="font-weight:600;color:#2E7458;">✓ DISPONIBLE HOY</span>
-        <ul style="font-size:14px;margin:12px 0 0;padding-left:20px;color:var(--text-muted);">
-          <li>Chat inmobiliario con IA</li>
-          <li>Analizador de contratos</li>
-          <li>Calculadora de sellado y comisión</li>
-          <li>Rentabilidad de inversión (cap rate, cash flow)</li>
-          <li>Vencimientos con semáforo</li>
-          <li>Tasación comparable</li>
-          <li>Generador de boletos de compraventa</li>
-          <li>Cartera de propiedades + aviso para portales</li>
-          <li>Agenda de visitas</li>
-          <li>Libro de comisiones ganadas</li>
-          <li>Verificación documental con IA</li>
-          <li>Crédito hipotecario / cuota UVA</li>
-        </ul>
+    <div class="bento-grid">
+      <div class="bento b-2x1" style="border-color:color-mix(in srgb, var(--ok) 35%, var(--border))">
+        <h3 style="color:var(--ok-soft)">✓ Disponible hoy</h3>
+        <p>Chat inmobiliario, analizador de contratos, sellado y comisión, rentabilidad de inversión, vencimientos, tasación, boletos, cartera, agenda, comisiones, verificación documental, crédito UVA.</p>
       </div>
-      <div class="card" style="border-left: 4px solid var(--accent);">
-        <span style="font-weight:600;color:var(--accent);">🔄 EN PREPARACIÓN</span>
-        <ul style="font-size:14px;margin:12px 0 0;padding-left:20px;color:var(--text-muted);">
-          <li>Atención de leads por WhatsApp — la infraestructura ya está construida, falta la activación del número con Meta</li>
-        </ul>
+      <div class="bento b-1x1" style="border-color:color-mix(in srgb, var(--amber) 35%, var(--border))">
+        <h3 style="color:var(--amber)">🔄 En preparación</h3>
+        <p>Atención de leads por WhatsApp — infraestructura lista, falta activar el número con Meta.</p>
       </div>
-      <div class="card" style="border-left: 4px solid #999;">
-        <span style="font-weight:600;color:#999;">⏳ FUTURO (2027)</span>
-        <ul style="font-size:14px;margin:12px 0 0;padding-left:20px;color:var(--text-muted);">
-          <li>Integración directa con portales (Zonaprop/Argenprop)</li>
-          <li>Verificación registral automática (Registro de la Propiedad)</li>
-        </ul>
+      <div class="bento b-1x1">
+        <h3 style="color:var(--dim)">⏳ Futuro (2027)</h3>
+        <p>Integración directa con portales y verificación registral automática.</p>
       </div>
     </div>
-    <p style="font-size:14px;color:var(--text-muted);text-align:center;margin-top:20px;max-width:600px;margin-left:auto;margin-right:auto;">Somos honestos con nuestro roadmap. Cada feature se lanza cuando está listo, no cuando queremos parecer listos. Escribinos si querés que prioricemos algo específico.</p>
   </div>
 </section>
 
-<section style="background:var(--bg-alt);">
+<!-- STEPS -->
+<section>
   <div class="container">
     <div class="section-head">
       <span class="eyebrow">Flujo simple</span>
       <h2>Tres pasos hasta el análisis</h2>
     </div>
-    <div class="steps">
+    <div class="steps-wrap">
       <div class="step">
-        <div class="num">1</div>
-        <h4>Cargá tu API key de Anthropic</h4>
-        <p>Creás cuenta gratis en console.anthropic.com, generás una key y la pegás en MiPropIA. Nadie ve tu clave, solo vos.</p>
-        <span class="time">1 minuto</span>
+        <div class="stepn">1</div>
+        <div>
+          <div class="stept">Cargá tu API key de Anthropic</div>
+          <div class="stepd">Creás cuenta gratis en console.anthropic.com, generás una key y la pegás en MiPropIA. Nadie más la ve.</div>
+          <span class="stag">1 minuto</span>
+        </div>
       </div>
       <div class="step">
-        <div class="num">2</div>
-        <h4>Subí el documento o preguntá</h4>
-        <p>Contrato, boleto, o simplemente escribí tu consulta sobre sellado, comisiones o normativa vigente.</p>
-        <span class="time">Segundos</span>
+        <div class="stepn">2</div>
+        <div>
+          <div class="stept">Subí el documento o preguntá</div>
+          <div class="stepd">Contrato, boleto, o simplemente escribí tu consulta sobre sellado, comisiones o normativa vigente.</div>
+          <span class="stag">Segundos</span>
+        </div>
       </div>
       <div class="step">
-        <div class="num">3</div>
-        <h4>Descargá el resultado</h4>
-        <p>Resumen ejecutivo con datos clave y alertas, listo para compartir con el propietario o el escribano.</p>
-        <span class="time">Instantáneo</span>
+        <div class="stepn">3</div>
+        <div>
+          <div class="stept">Descargá el resultado</div>
+          <div class="stepd">Resumen ejecutivo con datos clave y alertas, listo para compartir con el propietario o el escribano.</div>
+          <span class="stag">Instantáneo</span>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<section style="background:var(--bg-alt);">
+<!-- TESTIMONIAL -->
+<section style="background:var(--bg-soft);border-top:1px solid var(--border-soft);border-bottom:1px solid var(--border-soft)">
   <div class="container">
-    <div class="quote">
-      <p>"Lo que antes me llevaba media hora buscando cláusulas y calculando sellado, ahora lo resuelvo en 30 segundos. Es como tener un colega especialista disponible todo el día."</p>
-      <div class="who"><b>Martín D.</b> — Corredor inmobiliario, Entre Ríos</div>
+    <div class="bento" style="max-width:700px;margin:0 auto;text-align:center;padding:40px">
+      <p style="font-family:var(--serif);font-size:20px;font-style:italic;color:#fff;line-height:1.6;margin-bottom:16px">"Lo que antes me llevaba media hora buscando cláusulas y calculando sellado, ahora lo resuelvo en 30 segundos. Es como tener un colega especialista disponible todo el día."</p>
+      <div style="font-size:13px;color:var(--dim)"><b style="color:var(--mid)">Martín D.</b> — Corredor inmobiliario, Entre Ríos</div>
     </div>
   </div>
 </section>
 
-<section style="background:var(--bg-alt);">
+<!-- POR QUÉ SE PAGA SOLO -->
+<section>
   <div class="container">
     <div class="section-head">
       <span class="eyebrow">Se paga solo</span>
       <h2>El plan pago cuesta menos que un error de sellado</h2>
-      <p class="muted">USD 80/mes son entre $85.000 y $95.000 en un mes normal. Alcanza con evitar un solo cálculo mal hecho o un contrato que se vence sin aviso para que el plan se pague solo.</p>
+      <p>USD 80/mes son entre $85.000 y $95.000 en un mes normal. Alcanza con evitar un solo cálculo mal hecho para que el plan se pague solo.</p>
     </div>
-    <div class="grid cols-3">
-      <div class="card">
-        <span class="icon">⏱️</span>
+    <div class="bento-grid">
+      <div class="bento b-1x1">
         <h3>Media hora por contrato</h3>
-        <p>Lo que hoy te lleva revisar cláusulas y calcular sellado a mano, MiPropIA lo resuelve en 30 segundos. En un mes con 15-20 contratos, eso es media jornada laboral que recuperás.</p>
+        <p>Lo que hoy lleva revisar cláusulas y calcular sellado a mano, MiPropIA lo resuelve en 30 segundos.</p>
       </div>
-      <div class="card">
-        <span class="icon">⚠️</span>
+      <div class="bento b-1x1">
         <h3>Un vencimiento no visto sale caro</h3>
-        <p>Un contrato que se renueva solo, un índice que no se actualizó a tiempo — el semáforo de vencimientos existe para que ese error, que le cuesta plata y confianza a la inmobiliaria, no vuelva a pasar.</p>
+        <p>El semáforo de vencimientos existe para que ese error, que cuesta plata y confianza, no vuelva a pasar.</p>
       </div>
-      <div class="card">
-        <span class="icon">📱</span>
+      <div class="bento b-1x1">
         <h3>El primer WhatsApp gana el lead</h3>
-        <p>Cuando el módulo de atención por WhatsApp esté activo (exclusivo del plan Inmobiliaria), cada consulta se responde en minutos, no en horas — y en real estate, quien responde primero se queda con la visita.</p>
+        <p>Quien responde primero se queda con la visita — por eso viene incluido en el plan Inmobiliaria.</p>
+      </div>
+      <div class="bento b-1x1">
+        <h3>Sin letra chica</h3>
+        <p>El mismo producto en todos los planes. Lo que cambia es el acompañamiento, no las herramientas.</p>
       </div>
     </div>
   </div>
 </section>
 
+<!-- PRICING -->
 <section id="pricing">
   <div class="container">
     <div class="section-head">
       <span class="eyebrow">Transparente y sin sorpresas</span>
       <h2>Planes flexibles</h2>
-      <p class="muted">El costo de la IA lo pagás directamente a Anthropic. MiPropIA es la plataforma que lo hace inmobiliario.</p>
+      <p>El costo de la IA lo pagás directamente a Anthropic. MiPropIA es la plataforma que lo hace inmobiliario.</p>
     </div>
-    <div class="pricing-grid">
+    <div class="pgrid">
       <div class="plan">
         <h3>Uso propio</h3>
         <div class="price">Gratis</div>
-        <p class="desc">Acceso completo · pagás solo la API (~USD 0.01–0.02 por análisis)</p>
+        <div class="period">Acceso completo · pagás solo la API (~USD 0.01–0.02 por análisis)</div>
         <ul>
-          <li>Chat inmobiliario IA</li>
-          <li>Analizador de contratos</li>
-          <li>Calculadora de sellado y comisión</li>
-          <li>Rentabilidad de inversión (cap rate, cash flow)</li>
-          <li>Calendario de vencimientos</li>
+          <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span>Chat inmobiliario IA</li>
+          <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span>Analizador de contratos</li>
+          <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span>Calculadora de sellado y comisión</li>
+          <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span>Rentabilidad de inversión</li>
+          <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span>Calendario de vencimientos</li>
         </ul>
-        <a href="agente-inmobiliario.html" class="btn btn-ghost">Empezar gratis</a>
+        <a href="agente-inmobiliario.html" class="btn btn-ghost" style="justify-content:center">Empezar gratis</a>
       </div>
-      <div class="plan">
+      <div class="plan feat">
+        <span class="plan-badge">Recomendado</span>
         <h3>Inmobiliaria</h3>
         <div class="price">USD 80<small>/mes</small></div>
-        <p class="desc">Por inmobiliaria · hasta 5 usuarios</p>
+        <div class="period">Por inmobiliaria · hasta 5 usuarios</div>
         <ul>
-          <li>Todo de Uso propio</li>
-          <li>Atención de leads por WhatsApp (cuando esté activo)</li>
-          <li>Actualizaciones normativas automáticas</li>
-          <li>Soporte por WhatsApp (24 hs)</li>
-          <li>Onboarding personalizado</li>
-          <li>Historial extendido (6 meses)</li>
+          <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span>Todo de Uso propio</li>
+          <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span>Atención de leads por WhatsApp (cuando esté activo)</li>
+          <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span>Actualizaciones normativas automáticas</li>
+          <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span>Soporte por WhatsApp (24 hs)</li>
+          <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span>Onboarding personalizado</li>
+          <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span>Historial extendido (6 meses)</li>
         </ul>
-        <a href="agente-inmobiliario.html" class="btn btn-primary">Contratar plan</a>
+        <a href="agente-inmobiliario.html" class="btn btn-primary" style="justify-content:center">Contratar plan →</a>
       </div>
     </div>
   </div>
 </section>
 
-<section id="faq" style="background:var(--bg-alt);">
-  <div class="container" style="max-width:760px;">
+<!-- FAQ -->
+<section id="faq" style="background:var(--bg-soft);border-top:1px solid var(--border-soft);border-bottom:1px solid var(--border-soft)">
+  <div class="container">
     <div class="section-head">
       <span class="eyebrow">Lo que más nos preguntan</span>
       <h2>Preguntas frecuentes</h2>
     </div>
-    <details class="faq-item">
-      <summary>¿Qué es una API key y cuánto cuesta?</summary>
-      <p>Es una clave personal para usar la IA de Anthropic. Creás cuenta gratis en console.anthropic.com, cargás crédito y generás tu key. Con USD 5 hacés varios cientos de análisis.</p>
-    </details>
-    <details class="faq-item">
-      <summary>¿Mis contratos y datos son privados?</summary>
-      <p>Sí. MiPropIA no tiene backend propio. Tu API key y los archivos van directo de tu navegador a Anthropic. Al cerrar la pestaña, todo se borra del dispositivo salvo lo que decidas guardar.</p>
-    </details>
-    <details class="faq-item">
-      <summary>¿Reemplaza al escribano o al abogado?</summary>
-      <p>No. Es una herramienta de apoyo para agentes inmobiliarios. Acelera la lectura y detecta alertas, pero la validación legal final siempre es de un profesional matriculado.</p>
-    </details>
-    <details class="faq-item">
-      <summary>¿Funciona en el celular?</summary>
-      <p>Sí, es responsive. Funciona bien en smartphone y tablet, sin instalar ninguna app — igual que FiscoIA.</p>
-    </details>
+    <div class="faq-wrap">
+      <div class="faqitem">
+        <div class="faqq" onclick="toggleFaq(this)">¿Qué es una API key y cuánto cuesta?<span class="faqico">+</span></div>
+        <div class="faqa">Es una clave personal para usar la IA de Anthropic. Creás cuenta gratis en console.anthropic.com, cargás crédito y generás tu key. Con USD 5 hacés varios cientos de análisis.</div>
+      </div>
+      <div class="faqitem">
+        <div class="faqq" onclick="toggleFaq(this)">¿Mis contratos y datos son privados?<span class="faqico">+</span></div>
+        <div class="faqa">Sí. MiPropIA no tiene backend propio. Tu API key y los archivos van directo de tu navegador a Anthropic. Al cerrar la pestaña, todo se borra del dispositivo salvo lo que decidas guardar.</div>
+      </div>
+      <div class="faqitem">
+        <div class="faqq" onclick="toggleFaq(this)">¿Reemplaza al escribano o al abogado?<span class="faqico">+</span></div>
+        <div class="faqa">No. Es una herramienta de apoyo para agentes inmobiliarios. Acelera la lectura y detecta alertas, pero la validación legal final siempre es de un profesional matriculado.</div>
+      </div>
+      <div class="faqitem">
+        <div class="faqq" onclick="toggleFaq(this)">¿Funciona en el celular?<span class="faqico">+</span></div>
+        <div class="faqa">Sí, es responsive. Funciona bien en smartphone y tablet, sin instalar ninguna app — igual que en el resto de la familia LABStudio.</div>
+      </div>
+    </div>
   </div>
 </section>
 
-<section>
+<!-- CTA FINAL -->
+<section id="contacto">
   <div class="container">
     <div class="cta-final">
       <h2>Probalo ahora, gratis</h2>
       <p>Sin registro, sin tarjeta. Solo tu API key y listo.</p>
       <div class="hero-cta">
-        <a href="agente-inmobiliario.html" class="btn btn-accent">Abrir MiPropIA →</a>
-        <a href="guia-completa.html" class="btn btn-ghost" style="border-color:rgba(255,255,255,.3);">📚 Leer documentación</a>
+        <a href="agente-inmobiliario.html" class="btn btn-primary">Abrir MiPropIA →</a>
+        <a href="guia-completa.html" target="_blank" class="btn btn-ghost">Leer documentación</a>
       </div>
     </div>
   </div>
 </section>
 
-<section id="contacto">
-  <div class="container">
-    <div class="section-head">
+<!-- CONTACTO -->
+<section style="padding-top:0">
+  <div class="container contact-wrap">
+    <div class="section-head" style="text-align:left;margin-bottom:0">
       <span class="eyebrow">¿Tenés dudas?</span>
       <h2>Escribinos</h2>
-      <p class="muted">¿Tenés una pregunta o una propuesta para tu inmobiliaria? Contanos y te respondemos a la brevedad.</p>
+      <p>¿Tenés una pregunta o una propuesta para tu inmobiliaria? Contanos y te respondemos a la brevedad.</p>
     </div>
-    <form class="waitlist" id="contactForm" action="https://formspree.io/f/mqererkb" method="POST">
-      <div class="row">
-        <div>
-          <label for="cf-name">Nombre</label>
-          <input id="cf-name" type="text" name="name" required placeholder="Tu nombre">
-        </div>
-        <div>
-          <label for="cf-email">Email</label>
-          <input id="cf-email" type="email" name="email" required placeholder="vos@email.com">
-        </div>
+    <form class="cform" id="contactForm" action="https://formspree.io/f/mqererkb" method="POST">
+      <div class="cfield">
+        <label for="cf-name">Nombre</label>
+        <input id="cf-name" type="text" name="name" required placeholder="Tu nombre">
       </div>
-      <div class="row">
-        <div class="full">
-          <label for="cf-whatsapp">WhatsApp (opcional)</label>
-          <input id="cf-whatsapp" type="tel" name="whatsapp" placeholder="+54 9 343...">
-        </div>
+      <div class="cfield">
+        <label for="cf-email">Email</label>
+        <input id="cf-email" type="email" name="email" required placeholder="vos@email.com">
       </div>
-      <div class="row">
-        <div class="full">
-          <label for="cf-msg">Mensaje</label>
-          <textarea id="cf-msg" name="message" required placeholder="Contanos qué necesitás..."></textarea>
-        </div>
+      <div class="cfield">
+        <label for="cf-whatsapp">WhatsApp (opcional)</label>
+        <input id="cf-whatsapp" type="tel" name="whatsapp" placeholder="+54 9 343...">
+      </div>
+      <div class="cfield">
+        <label for="cf-msg">Mensaje</label>
+        <textarea id="cf-msg" name="message" required placeholder="Contanos qué necesitás..."></textarea>
       </div>
       <input type="hidden" name="_subject" value="Nuevo contacto — MiPropIA">
-      <button type="submit" class="btn btn-primary">Enviar mensaje</button>
-      <div class="form-success" id="cfSuccess">✓ ¡Listo! Recibimos tu mensaje, te respondemos a la brevedad.</div>
+      <button type="submit" class="cform-submit" id="cform-submit">Enviar mensaje</button>
+      <div class="cform-status" id="cform-status" role="status" aria-live="polite"></div>
     </form>
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer class="site">
   <div class="container">
     <div class="foot-grid">
       <div class="foot-brand">
-        <a href="#" class="brand"><img src="favicon-192.png" alt="MiPropIA" style="width:30px;height:30px;"> Mi Prop<span class="ia" style="color:var(--accent-light);">IA</span></a>
-        <p style="margin-top:12px;max-width:320px;">Analiza contratos, calcula sellado y comisiones, y no te pierdas ningún vencimiento. Hecho por LABStudio.pna.</p>
+        <div class="logo-name">Mi Prop<em>IA</em></div>
+        <p>Analiza contratos, calcula sellado y comisiones, y no te pierdas ningún vencimiento. Hecho por LABStudio.pna.</p>
       </div>
       <div class="foot-links">
-        <b style="color:#fff;font-size:13px;">Producto</b><br><br>
+        <b>Producto</b>
         <a href="#features">Características</a>
         <a href="#pricing">Precios</a>
+        <a href="guia-completa.html">Guía Completa</a>
       </div>
       <div class="foot-links">
-        <b style="color:#fff;font-size:13px;">Soporte</b><br><br>
-        <a href="guia-completa.html">Guía completa</a>
+        <b>Soporte</b>
         <a href="https://wa.me/5493435344597?text=Hola,%20quiero%20info%20sobre%20MiPropIA">WhatsApp</a>
         <a href="#faq">FAQ</a>
-        <a href="#contacto">Escribinos</a>
         <a href="terminos.html">Términos y Privacidad</a>
       </div>
     </div>
     <div class="foot-bottom">
       <span>© 2026 MiPropIA · Todos los derechos reservados</span>
-      <span>Desarrollado por<a href="https://labstudiopna.github.io" target="_blank">LABStudio.pna</a>· Paraná, Entre Ríos, Argentina</span>
+      <span>Desarrollado por <a href="https://labstudiopna.github.io" target="_blank">LABStudio.pna</a> · Paraná, Entre Ríos, Argentina</span>
     </div>
   </div>
 </footer>
 
+<script src="tracker.js" defer></script>
 <script>
-  const toggle = document.getElementById('themeToggle');
-  const root = document.documentElement;
-  function applyTheme(t){ root.setAttribute('data-theme', t); toggle.textContent = t === 'dark' ? '☀️' : '🌙'; }
-  applyTheme('light');
-  toggle.addEventListener('click', () => {
-    const current = root.getAttribute('data-theme');
-    applyTheme(current === 'dark' ? 'light' : 'dark');
+function toggleMobileMenu(){
+  document.getElementById('hamburger').classList.toggle('active');
+  document.getElementById('mobile-menu').classList.toggle('active');
+}
+function closeMobileMenu(){
+  document.getElementById('hamburger').classList.remove('active');
+  document.getElementById('mobile-menu').classList.remove('active');
+}
+document.querySelector('.logo').addEventListener('click', closeMobileMenu);
+
+function toggleFaq(el){
+  const item=el.parentElement;
+  const isOpen=item.classList.contains('open');
+  document.querySelectorAll('.faqitem').forEach(i=>i.classList.remove('open'));
+  if(!isOpen)item.classList.add('open');
+}
+
+(function(){
+  const isTouch = window.matchMedia('(hover: none)').matches;
+  const cards = document.querySelectorAll('.bento, .hb-tile');
+  cards.forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      if (isTouch) return;
+      const rx = (((e.clientY - r.top) / r.height) - 0.5) * -4;
+      const ry = (((e.clientX - r.left) / r.width) - 0.5) * 4;
+      card.style.transform = `perspective(700px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-2px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(700px) rotateX(0) rotateY(0) translateY(0)';
+    });
   });
+})();
 
-  // Mobile hamburger menu
-  const hamburgerBtn = document.getElementById('hamburgerBtn');
-  const navlinksEl = document.querySelector('.navlinks');
-  if (hamburgerBtn && navlinksEl) {
-    hamburgerBtn.addEventListener('click', () => {
-      const isOpen = navlinksEl.classList.toggle('open');
-      hamburgerBtn.textContent = isOpen ? '✕' : '☰';
-    });
-    navlinksEl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-      navlinksEl.classList.remove('open');
-      hamburgerBtn.textContent = '☰';
-    }));
-  }
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.bento, .step, .plan, .hb-tile').forEach(el => {
+  el.style.opacity = '0'; el.style.transform = 'translateY(16px)';
+  el.style.transition = 'opacity .5s ease, transform .5s ease';
+  obs.observe(el);
+});
 
-  const cfForm = document.getElementById('contactForm');
-  const cfSuccess = document.getElementById('cfSuccess');
-  if (cfForm) {
-    cfForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = cfForm.querySelector('button[type="submit"]');
-      const originalText = btn.textContent;
-      btn.textContent = 'Enviando...';
-      btn.disabled = true;
-      try {
-        const res = await fetch(cfForm.action, {
-          method: 'POST',
-          body: new FormData(cfForm),
-          headers: { 'Accept': 'application/json' }
-        });
-        if (res.ok) {
-          cfForm.reset();
-          cfSuccess.style.display = 'block';
-        } else {
-          alert('No se pudo enviar. Probá de nuevo o escribinos por WhatsApp.');
-        }
-      } catch (err) {
-        alert('No se pudo enviar. Probá de nuevo o escribinos por WhatsApp.');
-      } finally {
-        btn.textContent = originalText;
-        btn.disabled = false;
-      }
-    });
-  }
+const contactForm = document.getElementById('contactForm');
+if (contactForm) {
+  contactForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('cform-submit');
+    const status = document.getElementById('cform-status');
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+    status.className = 'cform-status show';
+    status.textContent = '';
+    try {
+      const res = await fetch(contactForm.action, { method: 'POST', body: new FormData(contactForm), headers: { 'Accept': 'application/json' } });
+      if (res.ok) {
+        status.className = 'cform-status show ok';
+        status.textContent = '¡Listo! Te respondemos a la brevedad.';
+        contactForm.reset();
+      } else { throw new Error('error'); }
+    } catch (err) {
+      status.className = 'cform-status show err';
+      status.textContent = 'No pudimos enviar el mensaje. Escribinos por WhatsApp.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Enviar mensaje';
+    }
+  });
+}
 </script>
-  <script src="tracker.js" defer></script>
 </body>
 </html>
